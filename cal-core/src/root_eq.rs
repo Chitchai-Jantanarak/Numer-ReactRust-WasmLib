@@ -42,14 +42,14 @@ pub(crate) struct TaylorResult {
     error: f64
 }
 
-#[derive(Serialize)] 
+#[derive(Serialize)] // Serialize the struct
 pub(crate) struct NewtonResult {
     iteration: u64,
     x: f64,
     error: f64
 }
 
-#[derive(Serialize)] 
+#[derive(Serialize)] // Serialize the struct
 pub(crate) struct SecantResult {
     iteration: u64,
     x0: f64,

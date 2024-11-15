@@ -5,6 +5,10 @@ use serde::Serialize;
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*; 
 
+
+
+// Duplication struct
+
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct CramerResult {
     pub(crate) det_true: f64,
@@ -20,8 +24,21 @@ pub(crate) struct GuassResult {
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct InverseResult {
     pub(crate) inverse_mat: Vec<Vec<f64>>,
-    pub(crate) value : Vec<f64>
+    pub(crate) value: Vec<f64>
 }
+
+#[derive(Serialize)] // Serialize the struct
+pub(crate) struct DecompositionResult {
+    pub(crate) lower_mat: Vec<Vec<f64>>,
+    pub(crate) upper_mat: Vec<Vec<f64>>,
+    pub(crate) forward_value: Vec<f64>,
+    pub(crate) backward_value: Vec<f64>
+}
+
+
+
+
+// wasm conversion JsValue
 
 #[wasm_bindgen]
 pub fn cramer(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> JsValue {
@@ -55,7 +72,26 @@ pub fn inverse_matrix(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> JsValue {
     }
 }
 
+#[wasm_bindgen]
+pub fn lu_decomposition(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> JsValue {
+    match lu_decomposition_core(mat, rows, ans) {
+        Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+        Err(e) => JsValue::from_str(&e),
+    }
+}
 
+#[wasm_bindgen]
+pub fn cholesky(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> JsValue {
+    match cholesky_core(mat, rows, ans) {
+        Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+        Err(e) => JsValue::from_str(&e),
+    }
+}
+
+
+
+
+// Add implement method
 
 pub(crate) fn cramer_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Result<CramerResult, String> {
 
@@ -276,8 +312,160 @@ pub(crate) fn inverse_matrix_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> 
     })
 }
 
+pub(crate) fn lu_decomposition_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Result<DecompositionResult, String> {
 
-// pub fn lu
+    let cols: usize = mat.len() / rows;
+
+    if rows != cols {
+        return Err(format!("Matrix is not square: {} * {}", rows, cols));
+    }
+
+    let matrix : Vec<Vec<f64>> = utils::mat_conv2d(&mat, rows);
+    let (lower, upper)  = lu_decomposition_generate(matrix);
+
+    let lower_result: Vec<f64>;
+    // forward substitution
+    match utils::guass(&lower, &ans) {
+        Ok(result) => lower_result = result,
+        Err(e) => return Err(format!("guassian calculation error: {}", e)),
+    }
+
+    let upper_result: Vec<f64>;
+    // backward substitution
+    match utils::guass(&upper, &lower_result) {
+        Ok(result) => upper_result = result,
+        Err(e) => return Err(format!("guassian calculation error: {}", e)),
+    }
+
+    Ok(DecompositionResult {
+        lower_mat: lower,
+        upper_mat: upper,
+        forward_value: lower_result,
+        backward_value: upper_result
+    })
+}
+
+pub(crate) fn cholesky_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Result<DecompositionResult, String> {
+    let cols: usize = mat.len() / rows;
+
+    if rows != cols {
+        return Err(format!("Matrix is not square: {} * {}", rows, cols));
+    }
+
+    let matrix : Vec<Vec<f64>> = utils::mat_conv2d(&mat, rows);
+
+    if !utils::is_positive_definite(&matrix) {
+        return Err("Matrix is not positive definite".to_string());
+    }
+
+    let (lower, upper);
+
+    match cholesky_generate(matrix) {
+        Ok(result) => {
+            lower = result.0;
+            upper = result.1;
+        }
+        Err(e) => return Err(e),
+    }
+
+    let lower_result: Vec<f64>;
+    // forward substitution
+    match utils::guass(&lower, &ans) {
+        Ok(result) => lower_result = result,
+        Err(e) => return Err(format!("guassian calculation error: {}", e)),
+    }
+
+    let upper_result: Vec<f64>;
+    // backward substitution
+    match utils::guass(&upper, &lower_result) {
+        Ok(result) => upper_result = result,
+        Err(e) => return Err(format!("guassian calculation error: {}", e)),
+    }
+
+    Ok(DecompositionResult {
+        lower_mat: lower,
+        upper_mat: upper,
+        forward_value: lower_result, 
+        backward_value: upper_result 
+    })
+}
+
+
+
+
+
+// Calculations
+
+// Create lower-Upper matrix
+fn lu_decomposition_generate(mat: Vec<Vec<f64>>) -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {
+    let n: usize = mat.len();
+    let mut lower: Vec<Vec<f64>> = vec![vec![0.0; n]; n];
+    let mut upper: Vec<Vec<f64>> = vec![vec![0.0; n]; n];
+
+    for i in 0..n {
+
+        // diagonal (init)
+        upper[i][i] = 1.0;
+
+        // Lower calc
+        for j in 0..=i {
+            let mut sum = 0.0;
+            for k in 0..j {
+                sum += lower[i][k] * upper[k][j];
+            }
+            lower[i][j] = mat[i][j] - sum;
+        }
+
+        // Upper
+        for j in i + 1..n {
+            let mut sum = 0.0;
+            for k in 0..i {
+                sum += lower[i][k] * upper[k][j];
+            }
+            upper[i][j] = (mat[i][j] - sum) / lower[i][i];
+        }
+    }
+
+    (lower, upper)
+}
+
+// Create Lower-Upper matrix
+fn cholesky_generate(mat: Vec<Vec<f64>>) -> Result< ( Vec<Vec<f64>>, Vec<Vec<f64>> ), String> {
+    let n = mat.len();
+
+    let mut lower = vec![vec![0.0; n]; n];
+
+    for i in 0..n {
+        for j in 0..=i {
+            let mut sum = 0.0;
+
+            // diagonal
+            if j == i {
+                for k in 0..j {
+                    sum += lower[j][k] * lower[j][k];
+                }
+                let diag_value = mat[j][j] - sum;
+                if diag_value <= 0.0 {
+                    return Err(format!("Diagonal elements is not positive definite at {}{}", j, j));
+                }
+
+                lower[j][j] = (diag_value).sqrt();
+            }
+            else {
+
+                for k in 0..j {
+                    sum += lower[i][k] * lower[j][k];
+                }
+                lower[i][j] = (mat[i][j] - sum) / lower[j][j];
+            }
+        }
+    }
+
+    let upper = utils::mat_transpose(&lower);
+
+    Ok((lower, upper))
+}
+
 // pub fn cholesky
 // pub fn jacobi
 // pub fn guass_seidel

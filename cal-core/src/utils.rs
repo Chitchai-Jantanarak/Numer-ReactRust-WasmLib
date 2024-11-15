@@ -183,3 +183,91 @@ pub fn det(mat: &Vec<Vec<f64>>) -> f64 {
     
     det
 }
+
+// Duplicated method for using in other topics
+pub fn guass(mat: &Vec<Vec<f64>>, ans: &Vec<f64>) -> Result<Vec<f64>, String> {
+
+    let mut aug_matrix  : Vec<Vec<f64>> = mat.clone();
+    let size            : usize         = mat.len();
+
+    if mat.len() != mat[0].len() || ans.len() != size {
+        return Err("Matrix size is not match".to_string());
+    }
+
+    for i in 0..size {
+        aug_matrix[i].push(ans[i]);
+    }
+
+    for i in 0..size {
+        let mut max_row: usize = i;
+        for j in i+1 ..size {
+            if aug_matrix[j][i].abs() >aug_matrix[max_row][i].abs() {
+                max_row = j;
+            }
+        }
+
+        if max_row != i {
+            aug_matrix.swap(i, max_row);
+        }
+
+        if aug_matrix[i][i] == 0.0 {
+            return Err("Matrix is no unique solution".to_string());
+        }
+
+        let pivot: f64 = aug_matrix[i][i];
+        for j in 0..=size {
+            aug_matrix[i][j] /= pivot;
+        }
+
+        for j in 0..size {
+            if j != i {
+                let ratio: f64 = aug_matrix[j][i];
+                for k in 0..=size {
+                    aug_matrix[j][k] -= ratio * aug_matrix[i][k];
+                }
+            }
+        }
+    }
+
+    let result = aug_matrix.iter().map(|row| row[size]).collect();
+
+    Ok(result)
+} 
+
+pub fn is_symmetric(mat: &Vec<Vec<f64>>) -> bool {
+    let size: usize = mat.len();
+
+    for i in 0..size {
+        for j in 0..size {
+            if mat[i][j] != mat[j][i] {
+                return false;
+            }
+        }
+    }
+
+    true
+}
+
+// Called when square matrix ONLY
+pub fn is_positive_definite(mat: &Vec<Vec<f64>>) -> bool {
+    let size = mat.len();
+
+    // testing symmetric
+    if !is_symmetric(mat) {
+        return false;
+    }
+
+    // make sub-matrix
+    for iter in 0..size {
+        let sub_matrix: Vec<Vec<f64>> = mat.iter()
+            .take(iter + 1)
+            .map(|rows| rows.iter().take(iter + 1).copied().collect())
+            .collect();
+
+        if det(&sub_matrix) < 0.0 {
+            return false;
+        }
+    }
+
+    true
+}

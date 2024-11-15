@@ -9,7 +9,7 @@ use wasm_bindgen::prelude::*;
 
 #[cfg(test)]
 mod tests {
-    use linear_eq::{guass_jordan_core, inverse_matrix_core};
+    use linear_eq::{cholesky_core, guass_jordan_core, inverse_matrix_core, lu_decomposition_core};
 
     use super::*;
     use crate::linear_eq::{cramer_core, guass_naive_core};
@@ -185,6 +185,101 @@ mod tests {
     }
 
 
+    #[test]
+    fn test_lu_decomposition_core() {
+        // Define the test matrix A (in flat vector form)
+        let mat = vec![
+            -2.0, 3.0, 1.0,
+             3.0, 4.0, -5.0,
+             1.0, -2.0, 1.0,
+        ];
+        let rows = 3;
+        
+        // Define the answer vector b
+        let ans = vec![9.0, 0.0, -4.0];
+        
+        // Run LU decomposition
+        let result = lu_decomposition_core(mat.clone(), rows, ans.clone()).unwrap();
+
+        // Expected lower triangular matrix (L)
+        let expected_lower = vec![
+            vec![-2.0, 0.0, 0.0],
+            vec![3.0, 8.5, 0.0],
+            vec![1.0, -0.5, 1.2941176470588236],
+        ];
+
+        // Expected upper triangular matrix (U)
+        let expected_upper = vec![
+            vec![1.0, -1.5, -0.5],
+            vec![0.0, 1.0, -0.4117647058823529],
+            vec![0.0, 0.0, 1.0],
+        ];
+
+        // Check lower matrix
+        assert_eq!(result.lower_mat, expected_lower, "Lower matrix does not match expected");
+        assert_eq!(result.upper_mat, expected_upper, "Upper matrix does not match expected");
+
+        // Check upper matrix
+
+        // Define expected solution for the system Ax = b
+        let expected_forward = vec![-4.5, 1.588235294117647, 0.9999999999999998];
+        let expected_backward = vec![-1.0, 2.0, 1.0];
+
+        // Check forward substitution result
+        assert_eq!(result.forward_value, expected_forward, "Forward substitution result does not match expected");
+
+        // Check backward substitution result
+        assert_eq!(result.backward_value, expected_backward, "Backward substitution result does not match expected");
+    }
+    
+
+    #[test]
+    fn test_cholesky_core() {
+        // Define the test matrix A (in flat vector form)
+        let mat = vec![
+            4.0, 12.0, -16.0,
+            12.0, 37.0, -43.0,
+            -16.0, -43.0, 98.0,
+        ];
+        let rows = 3;
+        
+        // Define the answer vector b
+        let ans = vec![2.0, -1.0, 3.0];
+        
+        // Run Cholesky decomposition
+        let result = cholesky_core(mat.clone(), rows, ans.clone()).unwrap();
+
+        // Expected lower triangular matrix (L)
+        let expected_lower = vec![
+            vec![2.0, 0.0, 0.0],
+            vec![6.0, 1.0, 0.0],
+            vec![-8.0, 5.0, 3.0],
+        ];
+
+        // Expected upper triangular matrix (U), which is the transpose of L
+        let expected_upper = vec![
+            vec![2.0, 6.0, -8.0],
+            vec![0.0, 1.0, 5.0],
+            vec![0.0, 0.0, 3.0],
+        ];
+
+        // Check lower matrix
+        assert_eq!(result.lower_mat, expected_lower, "Lower matrix does not match expected");
+        
+        // Check upper matrix
+        assert_eq!(result.upper_mat, expected_upper, "Upper matrix does not match expected");
+
+        // Define expected solution for the system Ax = b
+        let expected_forward = vec![1.0, -2.0, 0.5];  // Forward substitution result (L * y = b)
+        let expected_backward = vec![-2.0, 3.0, 1.0];  // Backward substitution result (U * x = y)
+
+        // Check forward substitution result
+        assert_eq!(result.forward_value, expected_forward, "Forward substitution result does not match expected");
+
+        // Check backward substitution result
+        assert_eq!(result.backward_value, expected_backward, "Backward substitution result does not match expected");
+    }
+    
+
+
 }
-
-
