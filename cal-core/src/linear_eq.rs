@@ -157,7 +157,7 @@ pub(crate) fn cramer_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Result<C
     let mut answer  : Vec<f64>      = Vec::new();
 
 
-    if det_true == 0.0 {
+    if det_true.abs() < 1e-12 {
         return Err("The determinant of true matrix is 0".to_string());
     }
     /*
@@ -215,7 +215,7 @@ pub(crate) fn guass_naive_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Res
             aug_matrix.swap(i, max_row);
         }
 
-        if aug_matrix[i][i] == 0.0 {
+        if aug_matrix[i][i].abs() < 1e-12 {
             return Err("Matrix is no unique solution".to_string());
         }
 
@@ -269,7 +269,7 @@ pub(crate) fn guass_jordan_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Re
             aug_matrix.swap(i, max_row);
         }
 
-        if aug_matrix[i][i] == 0.0 {
+        if aug_matrix[i][i] .abs() < 1e-12 {
             return Err("Matrix is no unique solution".to_string());
         }
 
@@ -307,7 +307,7 @@ pub(crate) fn inverse_matrix_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> 
     let mut aug_matrix  : Vec<Vec<f64>> = matrix.clone();
     let size            : usize         = matrix.len();
 
-    if utils::det(&matrix) == 0.0 {
+    if utils::det(&matrix).abs() < 1e-12 {
         return Err("Determinant is 0. Inverse matrix doesn't exist".to_string())
     }
 
@@ -328,7 +328,7 @@ pub(crate) fn inverse_matrix_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> 
             aug_matrix.swap(i, max_row);
         }
 
-        if aug_matrix[i][i] == 0.0 {
+        if aug_matrix[i][i].abs() < 1e-12 {
             return Err("Matrix is no unique solution".to_string());
         }
 
@@ -473,7 +473,7 @@ pub(crate) fn jacobi_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: Vec<f
                 }
             }
 
-            if matrix[i][i].abs() < 1e-10 {
+            if matrix[i][i].abs() < 1e-12 {
                 return Err("Matrix's diagonal elems is 0".to_string());
             }
 
@@ -532,7 +532,7 @@ pub(crate) fn guass_seidel_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init:
                 }
             }
 
-            if matrix[i][i].abs() < 1e-10 {
+            if matrix[i][i].abs() < 1e-12 {
                 return Err("Matrix's diagonal elems is 0".to_string());
             }
 
@@ -593,7 +593,7 @@ pub(crate) fn over_relaxation_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, in
                 }
             }
 
-            if matrix[i][i].abs() < 1e-10 {
+            if matrix[i][i].abs() < 1e-12 {
                 return Err("Matrix's diagonal elems is 0".to_string());
             }
 
@@ -634,16 +634,17 @@ pub(crate) fn cg_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: Vec<f64>)
     
     // Initialize
     let mut x         : Vec<f64> = init.clone();
-    let mut residual  : Vec<f64> = utils::vec_sub(&utils::mat_imul_vec(&matrix, &x),&ans);
+    let mut residual  : Vec<f64> = utils::vec_sub(&utils::mat_imul_vec(&matrix, &x), &ans);
     let mut direction : Vec<f64> = utils::scalar_mult(&residual, -1.0);
     let mut alpha     : f64 = 0.0;
+    let mut error     : f64 = utils::dot_prod_self(&residual).sqrt();
 
     result.push(ConjugateResult {
         iteration: 0,
         x: x.clone(),
         residual: residual.clone(),
         direction: direction.clone(),
-        error: 100.0,
+        error,
         lambda: -1.0,
         alpha: -1.0
     });
@@ -657,16 +658,15 @@ pub(crate) fn cg_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: Vec<f64>)
         let lambda_denominator = utils::dot_prod(&direction, &a_imul_d);
 
         // zero-division
-        if lambda_denominator == 0.0 {
+        if lambda_denominator.abs() < 1e-12 {
             break;
         }
 
         // new lambda --> x --> residual
-        let lambda = lambda_numerator / lambda_denominator;
-        x = utils::vec_add(&x, &utils::scalar_mult(&direction, lambda));
-        residual = utils::vec_sub(&utils::mat_imul_vec(&matrix, &x),&ans);
-
-        let error: f64 = (utils::dot_prod_self(&residual)).sqrt();
+        let lambda   = lambda_numerator / lambda_denominator * -1.0;
+        x        = utils::vec_add(&x, &utils::scalar_mult(&direction, lambda));
+        residual = utils::vec_sub(&utils::mat_imul_vec(&matrix, &x), &ans);
+        error    = (utils::dot_prod_self(&residual)).sqrt();
 
         result.push(ConjugateResult {
             iteration: iter+1,
@@ -683,6 +683,7 @@ pub(crate) fn cg_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: Vec<f64>)
             break;
         }
 
+        // new Alpha --> direction
         let alpha_numerator = utils::dot_prod(&residual, &a_imul_d);
         alpha = alpha_numerator / lambda_denominator;
         direction = utils::vec_add(&utils::scalar_mult(&residual, -1.0), &utils::scalar_mult(&direction, alpha));
