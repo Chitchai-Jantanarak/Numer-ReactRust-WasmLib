@@ -11,50 +11,50 @@ use wasm_bindgen::prelude::*;
 
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct BisectionResult {
-    iteration: u64,
-    xl: f64,
-    xr: f64,
-    xm: f64,
-    error: f64
+    pub(crate) iteration: u64,
+    pub(crate) xl: f64,
+    pub(crate) xr: f64,
+    pub(crate) xm: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct FalsePositionResult {
-    iteration: u64,
-    xl: f64,
-    xr: f64,
-    xm: f64,
-    error: f64
+    pub(crate) iteration: u64,
+    pub(crate) xl: f64,
+    pub(crate) xr: f64,
+    pub(crate) xm: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct FixedPointResult {
-    iteration: u64,
-    x: f64,
-    error: f64
+    pub(crate) iteration: u64,
+    pub(crate) x: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct TaylorResult {
-    iteration: u64,
-    x: f64,
-    sum: f64,
-    error: f64
+    pub(crate) iteration: u64,
+    pub(crate) x: f64,
+    pub(crate) sum: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct NewtonResult {
-    iteration: u64,
-    x: f64,
-    error: f64
+    pub(crate) iteration: u64,
+    pub(crate) x: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
 pub(crate) struct SecantResult {
-    iteration: u64,
-    x0: f64,
-    x1: f64,
-    error: f64
+    pub(crate) iteration: u64,
+    pub(crate) x0: f64,
+    pub(crate) x1: f64,
+    pub(crate) error: f64
 }
 
 
@@ -160,7 +160,7 @@ pub(crate) fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result
     Ok(result)
 }
 
-pub(crate) fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<FalsePositionResult>, String> {
+pub(crate) fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<FalsePositionResult>, String> { 
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),
