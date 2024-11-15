@@ -35,6 +35,12 @@ pub(crate) struct DecompositionResult {
     pub(crate) backward_value: Vec<f64>
 }
 
+#[derive(Serialize)]
+pub(crate) struct LinearIterationResult {
+    pub(crate) iteration: u64,
+    pub(crate) x: Vec<f64>,
+    pub(crate) error: f64
+}
 
 
 
@@ -88,7 +94,29 @@ pub fn cholesky(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> JsValue {
     }
 }
 
+#[wasm_bindgen]
+pub fn jacobi(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: f64) -> JsValue {
+    match jacobi_core(mat, rows, ans, init) {
+        Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+        Err(e) => JsValue::from_str(&e),
+    }
+}
 
+#[wasm_bindgen]
+pub fn guass_seidel(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: f64) -> JsValue {
+    match guass_seidel_core(mat, rows, ans, init) {
+        Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+        Err(e) => JsValue::from_str(&e),
+    }
+}
+
+#[wasm_bindgen]
+pub fn over_relaxation(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: f64, omega: f64) -> JsValue {
+    match over_relaxation_core(mat, rows, ans, init, omega) {
+        Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+        Err(e) => JsValue::from_str(&e),
+    }
+}
 
 
 // Add implement method
@@ -346,6 +374,7 @@ pub(crate) fn lu_decomposition_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -
 }
 
 pub(crate) fn cholesky_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Result<DecompositionResult, String> {
+    
     let cols: usize = mat.len() / rows;
 
     if rows != cols {
@@ -390,7 +419,180 @@ pub(crate) fn cholesky_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Result
     })
 }
 
+pub(crate) fn jacobi_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: f64) -> Result<Vec<LinearIterationResult>, String> {
+    
+    let cols: usize = mat.len() / rows;
 
+    if rows != cols {
+        return Err(format!("Matrix is not square: {} * {}", rows, cols));
+    }
+
+    let matrix : Vec<Vec<f64>> = utils::mat_conv2d(&mat, rows);
+    let x_size : usize         = ans.len();
+
+    let mut x_old  : Vec<f64>   = vec![init; x_size];
+    let mut x_new  : Vec<f64>   = vec![0.0; x_size];
+    let mut result : Vec<LinearIterationResult> = Vec::new();
+
+    // init
+    result.push(LinearIterationResult {
+        iteration: 0,
+        x: x_old.clone(),
+        error: 100.0
+    });
+
+    for iter in 0..100 {
+        for i in 0..x_size {
+
+            let mut sum: f64 = 0.0;
+            for j in 0..x_size {
+                if j != i {
+                    sum += matrix[i][j] * x_old[j];
+                }
+            }
+
+            if matrix[i][i].abs() < 1e-10 {
+                return Err("Matrix's diagonal elems is 0".to_string());
+            }
+
+            x_new[i] = (ans[i] - sum) / matrix[i][i];
+        }
+
+        let error: f64 = utils::error_calc(x_new[0], x_old[0]);
+
+        result.push(LinearIterationResult {
+            iteration: iter + 1,
+            x: x_new.clone(),
+            error
+        });
+
+        if error < 1e-6 {
+            break;
+        }
+
+        x_old = x_new.clone();
+    }
+
+    Ok(result)
+}
+
+pub(crate) fn guass_seidel_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: f64) -> Result<Vec<LinearIterationResult>, String> {
+    
+    let cols: usize = mat.len() / rows;
+
+    if rows != cols {
+        return Err(format!("Matrix is not square: {} * {}", rows, cols));
+    }
+
+    let matrix : Vec<Vec<f64>> = utils::mat_conv2d(&mat, rows);
+    let x_size : usize         = ans.len();
+
+    let mut x  : Vec<f64>   = vec![init; x_size];
+    let mut result : Vec<LinearIterationResult> = Vec::new();
+
+    // init
+    result.push(LinearIterationResult {
+        iteration: 0,
+        x: x.clone(),
+        error: 100.0
+    });
+
+    for iter in 0..100 {
+
+        let prev_x = x[0];
+
+        for i in 0..x_size {
+
+            let mut sum: f64 = 0.0;
+            for j in 0..x_size {
+                if j != i {
+                    sum += matrix[i][j] * x[j];
+                }
+            }
+
+            if matrix[i][i].abs() < 1e-10 {
+                return Err("Matrix's diagonal elems is 0".to_string());
+            }
+
+            x[i] = (ans[i] - sum) / matrix[i][i];
+        }
+
+        let error: f64 = utils::error_calc(x[0], prev_x);
+
+        result.push(LinearIterationResult {
+            iteration: iter + 1,
+            x: x.clone(),
+            error
+        });
+
+        if error < 1e-6 {
+            break;
+        }
+    }
+
+    Ok(result)
+}
+
+pub(crate) fn over_relaxation_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: f64, omega: f64) -> Result<Vec<LinearIterationResult>, String> {
+
+    if omega <= 0.0 || omega >= 2.0 {
+        return Err("Relaxation factor omega must be in (0, 2)".to_string());
+    }
+    
+    let cols: usize = mat.len() / rows;
+
+    if rows != cols {
+        return Err(format!("Matrix is not square: {} * {}", rows, cols));
+    }
+
+    let matrix : Vec<Vec<f64>> = utils::mat_conv2d(&mat, rows);
+    let x_size : usize         = ans.len();
+
+    let mut x  : Vec<f64>   = vec![init; x_size];
+    let mut result : Vec<LinearIterationResult> = Vec::new();
+
+    // init
+    result.push(LinearIterationResult {
+        iteration: 0,
+        x: x.clone(),
+        error: 100.0
+    });
+
+    for iter in 0..100 {
+
+        let prev_x = x[0];
+
+        for i in 0..x_size {
+
+            let mut sum: f64 = 0.0;
+            for j in 0..x_size {
+                if j != i {
+                    sum += matrix[i][j] * x[j];
+                }
+            }
+
+            if matrix[i][i].abs() < 1e-10 {
+                return Err("Matrix's diagonal elems is 0".to_string());
+            }
+
+            x[i] = ((ans[i] - sum) / matrix[i][i] * omega) + ((1.0 - omega) * x[i]);
+        }
+
+        let error: f64 = utils::error_calc(x[0], prev_x);
+
+        result.push(LinearIterationResult {
+            iteration: iter + 1,
+            x: x.clone(),
+            error
+        });
+
+        if error < 1e-6 {
+            break;
+        }
+    }
+
+    Ok(result)
+}
 
 
 
@@ -465,8 +667,3 @@ fn cholesky_generate(mat: Vec<Vec<f64>>) -> Result< ( Vec<Vec<f64>>, Vec<Vec<f64
 
     Ok((lower, upper))
 }
-
-// pub fn cholesky
-// pub fn jacobi
-// pub fn guass_seidel
-// pub fn cg
