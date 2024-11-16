@@ -7,6 +7,7 @@ use meval::Expr;
 use wasm_bindgen::prelude::*; 
 
 
+
 // Duplication struct
 
 #[derive(Serialize)] // Serialize the struct
@@ -56,6 +57,7 @@ pub(crate) struct SecantResult {
     pub(crate) x1: f64,
     pub(crate) error: f64
 }
+
 
 
 // wasm conversion JsValue
@@ -332,6 +334,7 @@ pub(crate) fn secant_core(equation: &str, mut x0: f64, mut x1: f64) -> Result<Ve
 
     Ok(result)
 }
+
 
 
 // Calculations

@@ -35,14 +35,14 @@ pub(crate) struct DecompositionResult {
     pub(crate) backward_value: Vec<f64>
 }
 
-#[derive(Serialize)]
+#[derive(Serialize)] // Serialize the struct
 pub(crate) struct LinearIterationResult {
     pub(crate) iteration: u64,
     pub(crate) x: Vec<f64>,
     pub(crate) error: f64
 }
 
-#[derive(Serialize)]
+#[derive(Serialize)] // Serialize the struct
 pub(crate) struct ConjugateResult {
     pub(crate) iteration: u64,
     pub(crate) x: Vec<f64>,
@@ -136,8 +136,6 @@ pub fn conjugate_gradient(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: Vec<f
         Err(e) => JsValue::from_str(&e),
     }
 }
-
-
 
 
 
