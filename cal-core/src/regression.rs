@@ -38,8 +38,10 @@ pub fn mult_lsq_regression(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> JsValu
 
 
 
+// wasm conversion JsValue
 
 pub(crate) fn lsq_regression_core(x: Vec<f64>, y: Vec<f64>, degree: u32) -> Result<RegressionResult, String> {
+
     if x.len() != y.len() {
         return Err("X & Y is not matches".to_string());
     }
@@ -84,12 +86,17 @@ pub(crate) fn lsq_regression_core(x: Vec<f64>, y: Vec<f64>, degree: u32) -> Resu
 }
 
 pub(crate) fn mult_lsq_regression_core(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Result<RegressionResult, String> {
+    
+    if x.len() % degree.len() != 0 {
+        return Err("Datas incomplete".to_string());
+    }
+    
     if x.len() / degree.len() != y.len() {
         return Err("X & Y is not matches".to_string());
     }
 
     // no sorting cause of the y if always be matches for every row at x
-    if degree.iter().all(|&value| value == 1)  {
+    if degree.iter().all(|&value| value == 0)  {
         return mult_linear_lsq_calc(x, y, degree);
     }
     else {
@@ -99,6 +106,7 @@ pub(crate) fn mult_lsq_regression_core(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32
 
 
 
+// Calculations
 
 fn mult_linear_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Result<RegressionResult, String>{
     let mat_size: usize = degree.len() + 1;
@@ -113,20 +121,22 @@ fn mult_linear_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Result<Re
 
     for i in 0..mat_size {
         for j in 0..mat_size {
-
-            if i == 0 && j == 0 {
-                mat[i][j] = x.len() as f64;
-            }
-            else {
-                mat[i][j] = datas[j].iter().sum();
-            }
-
+            mat[i][j] = match (i, j) {
+                (0, 0) => y.len() as f64,
+                (0, _) => datas[j - 1].iter().sum(),
+                (_, 0) => datas[i - 1].iter().sum(),
+                _ => datas[i - 1]
+                    .iter()
+                    .zip(&datas[j - 1])
+                    .map(|(&x, &y)| x * y)
+                    .sum(),
+            };
         }
 
         // x is cooperate(matches) between y
         ans[i] = if i != 0 {
-            y.iter().zip(datas[i - 1].iter().map(|&x_val| x_val.powi(i as i32)))
-                .map(|(y_val, x_term)| y_val * x_term)
+                y.iter().zip(datas[i - 1].iter())
+                .map(|(&value_x, &value_y)| value_x * value_y)
                 .sum()
             }
             else {
@@ -149,7 +159,8 @@ fn mult_linear_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Result<Re
 
 fn mult_polynomial_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Result<RegressionResult, String>{
 
-    let combinations = generate_combinations(degree.clone());
+    // combinations include the 0 deg.
+    let combinations = generate_combinations(degree.iter().map(|&deg| deg+1).collect());
     let size = combinations.len();
 
     let mut mat: Vec<Vec<f64>> = vec![vec![0.0; size]; size];
@@ -161,38 +172,40 @@ fn mult_polynomial_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Resul
     }).collect();
 
     
-
     for i in 0..size {
         for j in 0..size {
 
-            if i == 0 && j == 0 {
-                mat[i][j] = datas[0].len() as f64;
-                continue;;
-            }
-            else {
-                let mut term: Vec<Vec<f64>> = Vec::new();
+            mat[i][j] = match (i, j) {
+                (0, 0) => datas[0].len() as f64,
+                (_, 0) => mat[j][i],
+                _ => {
+                    let mut term: Vec<Vec<f64>> = Vec::new();
 
-                for (k, &comb) in combinations[i].iter().enumerate() {
-                    if comb == 0 {
-                        continue;
+                    for (k, &comb) in combinations[j].iter().enumerate() {
+                        if comb == 0 {
+                            continue;
+                        }
+                        
+                        let powered_datas: Vec<f64> = datas[k]
+                            .iter()
+                            .map(|&value| value.powi((comb + combinations[i][k]) as i32))
+                            .collect();
+                        term.push(powered_datas);
                     }
-                    
-                    let powered_values: Vec<f64> = datas[k]
-                        .iter()
-                        .map(|&value| value.powi((comb +combinations[i][k]) as i32))
-                        .collect();
-                    term.push(powered_values);
-                }
-                
-                let result_term: f64 = (0..term[0].len())
-                    .map(|col| {
-                        term.iter().map(|row| row[col]).product::<f64>()
-                    })
-                    .sum();
 
-                mat[i][j] = result_term;
+                    if term.is_empty() || term[0].is_empty() {
+                        return Err(format!("Invalid term matrix generated at {} {}", i, j));
+                    }
+
+                    let result_term = (0..term[0].len())
+                        .map(|col| {
+                            term.iter().map(|row| row[col]).product::<f64>()
+                        })
+                        .sum();
+
+                    result_term
+                },
             }
-
         }
 
         let mut term: Vec<Vec<f64>> = Vec::new();
@@ -265,5 +278,6 @@ pub(crate) fn generate_combinations(sizes: Vec<u32>) -> Vec<Vec<u32>> {
         }
     }
 
+    println!("{:?}", result);
     result
 }
