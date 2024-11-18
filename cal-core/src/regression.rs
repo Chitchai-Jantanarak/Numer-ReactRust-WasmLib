@@ -278,6 +278,5 @@ pub(crate) fn generate_combinations(sizes: Vec<u32>) -> Vec<Vec<u32>> {
         }
     }
 
-    println!("{:?}", result);
     result
 }
