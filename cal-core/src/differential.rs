@@ -53,6 +53,37 @@ pub fn derivative
  *  Interface for implementing (trait)
  *  function TODO in calculation case with precision & times of differential
  * 
+ *  Forward & Backward
+ *   Diff. Acc.               CoEff. / Offset             Divisor
+ *                0     1     2     3     4     5     6     /
+ *    1     1    -1     1                                   -
+ *          2    -3     4    -1                             2
+ *          3    -11    18   -9     2                       6
+ *    2     1     1    -2     1                             -
+ *          2    -5     4    -1                             -
+ *          3     35   -104  -114  -56    11                12
+ *    3     1    -1     3    -3     1                       -
+ *          2    -5     18   -24    14   -3                 2
+ *          3    -34    142  -236   196  -82    14          8
+ *    4     1     1    -4     6    -4     1                 -   
+ *          2     3    -14    26   -24    11   -2           -  
+ *          3     70   -372   822  -968   642  -228   34    12
+ *  
+ *  Central
+ *   Diff. Acc.                    CoEff. / Offset                    Divisor
+ *               -4    -3    -2    -1     0     1     2     3     4     /
+ *    1     1                      -1           1                       2
+ *          2                 1    -8           8    -1                 12
+ *          3          -1     9    -45          45   -9     1           60 
+ *    2     1                       1    -2     1                       -
+ *          2                -1     16   -30    16   -1                 12
+ *          3           2    -27    270  -490   270  -27    2           180
+ *    3     1                -1     2          -2     1                 2
+ *          2           1    -8     13         -13    8    -1           8
+ *          3    -7     72   -338   488        -488   338  -72    7     240
+ *    4     1                 1    -4     6    -4     1                 -
+ *          2          -2     24   -78    112  -78    24   -2           12
+ *          3     7    -96    676  -1952  2730 -1952  676  -96    7     240
  * */
 struct Forward;
 struct Backward;
