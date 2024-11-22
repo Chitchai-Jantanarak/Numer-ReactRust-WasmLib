@@ -95,8 +95,8 @@ pub fn taylor(equations: Vec<String>, xl: f64, xr: f64) -> JsValue {
 }
 
 #[wasm_bindgen]
-pub fn newton(equation_base: &str, equation_diff: &str, x: f64) -> JsValue {
-    match newton_core(equation_base, equation_diff, x) {
+pub fn newton_raphson(equation_base: &str, equation_diff: &str, x: f64) -> JsValue {
+    match newton_raphson_core(equation_base, equation_diff, x) {
         Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
         Err(e) => JsValue::from_str(&e),
     }
@@ -276,7 +276,7 @@ pub(crate) fn taylor_core(equations: Vec<String>, xl: f64, xr: f64) -> Result<Ve
     Ok(result)
 }
 
-pub(crate) fn newton_core(equation_base: &str, equation_diff: &str, mut x: f64) -> Result<Vec<NewtonResult>, String> {
+pub(crate) fn newton_raphson_core(equation_base: &str, equation_diff: &str, mut x: f64) -> Result<Vec<NewtonResult>, String> {
     let expr_base: Expr = match equation_base.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),

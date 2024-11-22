@@ -19,14 +19,14 @@ pub(crate) struct IntegralResult {
     pub(crate) error: f64
 }
 
-#[derive(Serialize)]
-pub(crate) struct RombergResult {
+#[derive(Serialize)] // Serialize the struct
+pub(crate) struct RombergResult { 
     pub(crate) true_result: f64,
     pub(crate) result: Vec<Vec<f64>>,
     pub(crate) error: Vec<Vec<f64>>
 }
 
-#[derive(Serialize)]
+#[derive(Serialize)] // Serialize the struct
 pub(crate) struct GuassIntegralResult {
     pub(crate) true_result: f64,
     pub(crate) result: f64,
