@@ -18,6 +18,21 @@ pub fn factorial(n: usize) -> usize {
     }
 }
 
+pub fn pair_sort_asc(x: Vec<f64>, y: Vec<f64>, indicator: u32) -> (Vec<f64>, Vec<f64>) {
+
+    let mut paired: Vec<(f64, f64)> = x.iter().zip(y.iter()).map(|(&a, &b)| (a,b)).collect();
+
+    match indicator {
+        1 => paired.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap()),
+        2 => paired.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap()),
+        _ => {},
+    }
+
+    let (sorted_x, sorted_y) = paired.into_iter().unzip();
+
+    (sorted_x, sorted_y)
+}
+
 pub fn dot_prod_self(mat: &Vec<f64>) -> f64 {
     let mut result: f64 = 0.0;
     for iter in 0..mat.len() {
@@ -90,31 +105,6 @@ pub fn mat_transpose(mat: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     }
 
     transposed
-}
-
-pub fn mat_imul_mat(mat1: &Vec<Vec<f64>>, mat2: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
-   
-    let row_mat1: usize = mat1.len();
-    let col_mat1: usize = mat1[0].len();
-    let row_mat2: usize = mat2.len();
-    let col_mat2: usize = mat2[0].len();
-   
-    // Not mult property matrix
-    if col_mat1 != row_mat2 {
-        panic!("Matrix is can't Mult");
-    }
-
-    let mut result: Vec<Vec<f64>> = vec![vec![0.0; col_mat2]; row_mat1];
-
-    for i in 0..row_mat1 {
-        for j in 0..col_mat2 {
-            for k in 0..col_mat1 {
-                result[i][j] += mat1[i][k] * mat2[k][j];
-            }
-        }
-    }
-
-    result
 }
 
 pub fn mat_imul_vec(mat: &Vec<Vec<f64>>, vec: &Vec<f64>) -> Vec<f64> {
@@ -271,3 +261,31 @@ pub fn is_positive_definite(mat: &Vec<Vec<f64>>) -> bool {
 
     true
 }
+
+// ----------------- unused method ----------------- 
+/*
+ * pub fn mat_imul_mat(mat1: &Vec<Vec<f64>>, mat2: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+   
+    let row_mat1: usize = mat1.len();
+    let col_mat1: usize = mat1[0].len();
+    let row_mat2: usize = mat2.len();
+    let col_mat2: usize = mat2[0].len();
+   
+    // Not mult property matrix
+    if col_mat1 != row_mat2 {
+        panic!("Matrix is can't Mult");
+    }
+
+    let mut result: Vec<Vec<f64>> = vec![vec![0.0; col_mat2]; row_mat1];
+
+    for i in 0..row_mat1 {
+        for j in 0..col_mat2 {
+            for k in 0..col_mat1 {
+                result[i][j] += mat1[i][k] * mat2[k][j];
+            }
+        }
+    }
+
+    result
+}
+*/

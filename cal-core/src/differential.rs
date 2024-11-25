@@ -632,7 +632,7 @@ fn get_method(count: u32) -> Result<Box<dyn Differential>, String> {
         1 => Ok(Box::new(Forward)),
         2 => Ok(Box::new(Backward)),
         3 => Ok(Box::new(Central)),
-        _ => Err("Precision is mismatch".to_string())
+        _ => Err("Method type is mismatch".to_string())
     }
 }
 
