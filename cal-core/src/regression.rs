@@ -38,7 +38,7 @@ pub fn mult_lsq_regression(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> JsValu
 
 
 
-// wasm conversion JsValue
+// Calculations
 
 pub(crate) fn lsq_regression_core(x: Vec<f64>, y: Vec<f64>, degree: u32) -> Result<RegressionResult, String> {
 
