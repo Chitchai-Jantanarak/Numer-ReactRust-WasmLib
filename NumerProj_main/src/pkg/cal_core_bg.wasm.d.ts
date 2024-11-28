@@ -1,0 +1,35 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export function cramer(a: number, b: number, c: number, d: number, e: number): number;
+export function guass_naive(a: number, b: number, c: number, d: number, e: number): number;
+export function guass_jordan(a: number, b: number, c: number, d: number, e: number): number;
+export function inverse_matrix(a: number, b: number, c: number, d: number, e: number): number;
+export function lu_decomposition(a: number, b: number, c: number, d: number, e: number): number;
+export function cholesky(a: number, b: number, c: number, d: number, e: number): number;
+export function jacobi(a: number, b: number, c: number, d: number, e: number, f: number, g: number): number;
+export function guass_seidel(a: number, b: number, c: number, d: number, e: number, f: number, g: number): number;
+export function over_relaxation(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number): number;
+export function conjugate_gradient(a: number, b: number, c: number, d: number, e: number, f: number, g: number): number;
+export function newton_divided(a: number, b: number, c: number, d: number, e: number): number;
+export function lagrange(a: number, b: number, c: number, d: number, e: number): number;
+export function spline(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function lsq_regression(a: number, b: number, c: number, d: number, e: number): number;
+export function mult_lsq_regression(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function trapezodial(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function simpson_1in3(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function simpson_3in8(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function romberg(a: number, b: number, c: number, d: number, e: number): number;
+export function guass_integration(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function bisection(a: number, b: number, c: number, d: number): number;
+export function false_position(a: number, b: number, c: number, d: number): number;
+export function fixed_point(a: number, b: number, c: number): number;
+export function taylor(a: number, b: number, c: number, d: number): number;
+export function newton_raphson(a: number, b: number, c: number, d: number, e: number): number;
+export function secant(a: number, b: number, c: number, d: number): number;
+export function derivative(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number): number;
+export function __wbindgen_malloc(a: number, b: number): number;
+export function __wbindgen_realloc(a: number, b: number, c: number, d: number): number;
+export const __wbindgen_export_2: WebAssembly.Table;
+export function __externref_table_alloc(): number;
+export function __wbindgen_start(): void;
