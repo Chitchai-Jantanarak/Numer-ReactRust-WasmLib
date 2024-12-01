@@ -1,75 +1,49 @@
-import { useEffect, useState } from 'react';
-import init, { lsq_regression } from './pkg/cal_core.js';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import init from './pkg/cal_core.js';
+import WasmLoader from './components/WasmLoader.jsx';
+import WasmError from './components/WasmError.jsx';
+import SingleRegression from "./components/SingleRegression";
+import './App.css'
 
 function App() {
-  const [x, setX] = useState([1.0, 2.0, 3.0]); 
-  const [y, setY] = useState([2.0, 4.0, 6.0]); 
-  const [degree, setDegree] = useState(2); 
-  const [result, setResult] = useState(null);
+  // Track Wasm status: 'loading', 'pass', 'missing'
+  const [wasmStatus, setWasmStatus] = useState('loading'); 
+  const [loadDelay, setLoadDelay] = useState(false);
 
   useEffect(() => {
-    let isMounted = true; // Track is mounted
-
-    const runWasm = async () => {
-      await init(); // Initialize WASM mod
-
-      if (isMounted) {
-        const regressionResult = lsq_regression(x, y, degree);
-        setResult(regressionResult);
-        console.log('Regression Result:', regressionResult);
+    const loadWasm = async () => {
+      try {
+        await init();
+        setWasmStatus('pass');
+      } catch (error) {
+        console.error('Error loading Wasm:', error);
+        setWasmStatus('missing');
       }
     };
+    loadWasm();
+  }, []); // runs once on mount
 
-    runWasm().catch(console.error);
+  useEffect(() => {
+    if (wasmStatus === 'pass') {
+        const timer = setTimeout(() => setLoadDelay(true), 2000);
+        return () => clearTimeout(timer); // Cleanup timeout
+    }
+  }, [wasmStatus]);
 
-    return () => {
-      isMounted = false; // Clean up
-    };
-  }, [x, y, degree]);
-
-  // input handler
-    const handleXChange = (event) => {
-      const values = event.target.value.split(',').map(Number);
-      setX(values);
-    };
-
-    const handleYChange = (event) => {
-      const values = event.target.value.split(',').map(Number);
-      setY(values);
-    };
-
-    const handleDegreeChange = (event) => {
-      setDegree(Number(event.target.value));
-    };
+  if (wasmStatus === 'loading') return <WasmLoader />;
+  if (wasmStatus === 'missing') return <WasmError />;
+  if (!loadDelay) return <WasmLoader />;
 
   return (
     <div className="App">
-      <h1>WASM Linear Regression</h1>
-      <div>
-        <label>
-          X Values (comma-separated):
-          <input type="text" value={x.join(',')} onChange={handleXChange} />
-        </label>
-      </div>
-      <div>
-        <label>
-          Y Values (comma-separated):
-          <input type="text" value={y.join(',')} onChange={handleYChange} />
-        </label>
-      </div>
-      <div>
-        <label>
-          Degree:
-          <input type="number" value={degree} onChange={handleDegreeChange} />
-        </label>
-      </div>
-      <button onClick={() => console.log('Result:', result)}>Log Result</button>
-      {result && (
-        <div>
-          <h2>Regression Result:</h2>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        </div>
-      )}
+      <Router>
+        <Routes>
+          <Route pate="/" element={<App />} />
+          <Route path="/SingleRegression" element={<SingleRegression />} />
+        </Routes>
+      </Router>
+  
     </div>
   );
 }
