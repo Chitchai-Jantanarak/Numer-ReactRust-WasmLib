@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import init from './pkg/cal_core.js';
 import WasmLoader from './components/WasmLoader.jsx';
 import WasmError from './components/WasmError.jsx';
-import SingleRegression from "./components/SingleRegression";
+import SingleRegression from "./pages/SingleRegression.jsx";
+import MultipleRegression from "./pages/MultipleRegression.jsx";
 import './App.css'
 
 function App() {
@@ -41,9 +42,9 @@ function App() {
         <Routes>
           <Route pate="/" element={<App />} />
           <Route path="/SingleRegression" element={<SingleRegression />} />
+          <Route path="/MultipleRegression" element={<MultipleRegression />} />
         </Routes>
       </Router>
-  
     </div>
   );
 }
