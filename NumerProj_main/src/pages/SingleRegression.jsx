@@ -248,7 +248,7 @@ function SingleRegression() {
       </div>}
 
       {!isSufficientData() && <div style = {{ color: 'red' }}>
-        <h3> The degree should more than datas. </h3>
+        <h3> The datas should more than degree. </h3>
       </div>}
       
       {/* Results Section */}

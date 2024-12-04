@@ -77,9 +77,14 @@ function MultipleRegression() {
     }
   };
 
+  console.log(x, y);
+  
+
   const isInputsValid = () => {
-    return !x.some(value => value === "" || isNaN(value)) && 
-           !y.some(value => value === "" || isNaN(value));
+    return (
+      x.every(row => row.every(value => value !== '' && !isNaN(value))) &&
+      !y.some(value => value === "" || isNaN(value))
+    )
   };
 
   const isSufficientData = () => {
@@ -106,11 +111,11 @@ function MultipleRegression() {
   };
 
   const handleDegreeChange = (index, value) => {
-    const degree = Math.max(MIN_DEGREE_SIZE, Math.min(MAX_DEGREE_SIZE, Number(value)));
+    const newDegree = Math.max(MIN_DEGREE_SIZE, Math.min(MAX_DEGREE_SIZE, Number(value)));
     setDegree(prev => {
-        const newDegree  = [...prev];
-        newDegree[index] = degree;
-        return newDegree;
+        const newDegrees  = [...prev];
+        newDegrees[index] = newDegree;
+        return newDegrees;
     });
   };
 
@@ -119,36 +124,31 @@ function MultipleRegression() {
     setFeature(newFeature);
 
     // Update x n-Dim array
-    setX(prev => {
-        return prev.map(row => [
-          ...row.slice(0, newFeature),  
-          ...new Array(Math.max(0, newFeature - row.length)).fill(0)
-        ]);
-    });
-    
-    // Update n-degree
-    setDegree(prev => {
-        return [
-            ...prev.slice(0, newFeature), 
-            ...new Array(Math.max(0, newFeature - prev.length)).fill(MIN_DEGREE_SIZE)
-        ]; 
-    }); 
+    setX((prev) =>
+      prev.map(row =>
+        Array.from({ length: newFeature }).map((_, j) => row[j] ?? 0)
+      )
+    );
+  
+    setDegree((prev) =>
+      Array.from({ length: newFeature }).map((_, i) => prev[i] ?? MIN_DEGREE_SIZE)
+    );
   };
 
   const handleSizeChange = (event) => {
     const newSize = Math.max(MIN_INPUT_SIZE, Math.min(MAX_INPUT_SIZE, Number(event.target.value))); // Bound the size
     setSize(newSize);
 
-    // Ensure x and y arrays match the new size
-    setX(prev => {
-        return Array.from({ length: newSize }, (_, i) => {
-          return Array.from({ length: feature }, (_, j) => prev[i] && prev[i][j] !== undefined ? prev[i][j] : 0); // Prevent Outbound
-        });
-    });
-    
-    setY(prev => {
-        return Array.from({ length: newSize }, (_, i) => prev[i] || 0);
-    });
+    // Adjust x and y arrays match the new size
+    setX((prev) =>
+      Array.from({ length: newSize }).map((_, i) =>
+        prev[i] ? prev[i].slice(0, feature) : Array(feature).fill(0)
+      )
+    );
+  
+    setY((prev) =>
+      Array.from({ length: newSize }).map((_, i) => prev[i] ?? 0)
+    );
   };
 
   const renderLatex = (expression) => {
@@ -249,7 +249,7 @@ function MultipleRegression() {
                     X[{i + 1}][{j + 1}]:
                     <input
                         type     = "number"
-                        value    = {x[i][j] || ''}
+                        value    = {x[i]?.[j] ?? ''}
                         onChange = {(e) => handleXChange(i, j, e.target.value)}
                         step     = "any"
                         min      = "-1000"
@@ -261,7 +261,7 @@ function MultipleRegression() {
                 Y[{i + 1}]:
                 <input
                     type     = "number"
-                    value    = {y[i] || ''}
+                    value    = {y[i] ?? ''}
                     onChange = {(e) => handleYChange(i, e.target.value)}
                     step     = "any"
                     min      = "-32768"
@@ -280,7 +280,7 @@ function MultipleRegression() {
                     Degree {i + 1}:
                     <input 
                         type     = "number" 
-                        value    = {degree[i]} 
+                        value    = {degree[i] || ''} 
                         onChange = {(e) => handleDegreeChange(i, e.target.value)} 
                     />
                 </label>
@@ -310,7 +310,7 @@ function MultipleRegression() {
       </div>}
 
       {!isSufficientData() && <div style = {{ color: 'red' }}>
-        <h3> The degree should more than datas. </h3>
+        <h3> The datas should more than degree. </h3>
       </div>}
       
       {/* Results Section */}
