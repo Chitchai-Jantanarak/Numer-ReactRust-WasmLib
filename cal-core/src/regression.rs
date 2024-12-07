@@ -36,6 +36,12 @@ pub fn mult_lsq_regression(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> JsValu
     }
 }
 
+#[wasm_bindgen]
+pub fn combinations_regression(sizes: Vec<u32>) -> JsValue {
+    let result = generate_combinations(sizes);
+    to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
+}
+
 
 
 // Calculations
