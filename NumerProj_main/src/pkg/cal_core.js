@@ -359,6 +359,17 @@ export function mult_lsq_regression(x, y, degree) {
 }
 
 /**
+ * @param {Uint32Array} sizes
+ * @returns {any}
+ */
+export function combinations_regression(sizes) {
+    const ptr0 = passArray32ToWasm0(sizes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.combinations_regression(ptr0, len0);
+    return ret;
+}
+
+/**
  * @param {string} equation
  * @param {number} bound_least
  * @param {number} bound_most

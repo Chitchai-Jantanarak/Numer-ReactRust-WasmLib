@@ -112,6 +112,11 @@ export function lsq_regression(x: Float64Array, y: Float64Array, degree: number)
  */
 export function mult_lsq_regression(x: Float64Array, y: Float64Array, degree: Uint32Array): any;
 /**
+ * @param {Uint32Array} sizes
+ * @returns {any}
+ */
+export function combinations_regression(sizes: Uint32Array): any;
+/**
  * @param {string} equation
  * @param {number} bound_least
  * @param {number} bound_most
@@ -227,6 +232,7 @@ export interface InitOutput {
   readonly spline: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly lsq_regression: (a: number, b: number, c: number, d: number, e: number) => number;
   readonly mult_lsq_regression: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
+  readonly combinations_regression: (a: number, b: number) => number;
   readonly trapezodial: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly simpson_1in3: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly simpson_3in8: (a: number, b: number, c: number, d: number, e: number, f: number) => number;

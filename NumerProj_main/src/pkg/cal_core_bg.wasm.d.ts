@@ -16,6 +16,7 @@ export function lagrange(a: number, b: number, c: number, d: number, e: number):
 export function spline(a: number, b: number, c: number, d: number, e: number, f: number): number;
 export function lsq_regression(a: number, b: number, c: number, d: number, e: number): number;
 export function mult_lsq_regression(a: number, b: number, c: number, d: number, e: number, f: number): number;
+export function combinations_regression(a: number, b: number): number;
 export function trapezodial(a: number, b: number, c: number, d: number, e: number, f: number): number;
 export function simpson_1in3(a: number, b: number, c: number, d: number, e: number, f: number): number;
 export function simpson_3in8(a: number, b: number, c: number, d: number, e: number, f: number): number;
