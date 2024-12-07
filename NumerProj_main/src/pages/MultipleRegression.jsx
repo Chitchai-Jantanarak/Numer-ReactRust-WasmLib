@@ -10,7 +10,7 @@ function MultipleRegression() {
   const MIN_INPUT_SIZE   = 3;  // Minimum input size
   const MAX_INPUT_SIZE   = 20; // Maximum input size
   const MIN_DEGREE_SIZE  = 1;  // Minimum degree size
-  const MAX_DEGREE_SIZE  = 3; // Maximum degree size
+  const MAX_DEGREE_SIZE  = 3;  // Maximum degree size
   const MIN_FEATURE_SIZE = 2;  // Minimum feature size
   const MAX_FEATURE_SIZE = 5;  // Maximum feature size
   const MIN_X_NUMBER     = -100;
@@ -75,7 +75,6 @@ function MultipleRegression() {
 
   async function resultKatexDegreeSetter(result) {
     let combinations = await combination(degree);    
-
     const degreed = result.map((value, i) => {
       return value + combinations[i].map((comb, j) => 
         comb !== 0 ? comb !== 1 ? `x_${j + 1}^${comb}` : `x_${j + 1}` : '' ).join('');
