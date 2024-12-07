@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from "motion/react";
-import init, { lsq_regression } from '../pkg/cal_core.js';
 import { evaluate } from 'mathjs';
+import init, { lsq_regression } from '../pkg/cal_core.js';
 import Plot from 'react-plotly.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
@@ -9,8 +9,12 @@ import 'katex/dist/katex.min.css';
 function SingleRegression() {
   const MIN_INPUT_SIZE  = 3;  // Minimum input size
   const MAX_INPUT_SIZE  = 20; // Maximum input size
-  const MIN_DEGREE_SIZE = 2;  // Minimum degree size
+  const MIN_DEGREE_SIZE = 1;  // Minimum degree size
   const MAX_DEGREE_SIZE = 10; // Maximum degree size
+  const MIN_X_NUMBER     = -1000;
+  const MAX_X_NUMBER     = 1000;
+  const MIN_Y_NUMBER     = -32768;
+  const MAX_Y_NUMBER     = 32767;
 
   const [size, setSize]     = useState(3);
   const [x, setX]           = useState([1.0, 2.0, 5.0]);
@@ -84,14 +88,14 @@ function SingleRegression() {
   };
 
   const handleXChange = (index, value) => {
-    const newValue = value === '' ? '' : Math.min(1000, Math.max(-1000, Number(value)));
+    const newValue = value === '' ? '' : Math.min(MAX_X_NUMBER, Math.max(MIN_X_NUMBER, Number(value)));
     const newX = [...x];
     newX[index]  = newValue;
     setX(newX);
   };
 
   const handleYChange = (index, value) => {
-    const newValue = value === '' ? '' : Math.min(32767, Math.max(-32768, Number(value)));
+    const newValue = value === '' ? '' : Math.min(MAX_Y_NUMBER, Math.max(MIN_Y_NUMBER, Number(value)));
     const newY = [...y];
     newY[index] = newValue;
     setY(newY);
@@ -125,7 +129,8 @@ function SingleRegression() {
     }
   };
 
-  const plotData = result ? (() => {
+  const plotData = useMemo(() => {
+    if (!result) return null;
 
     const xMinBound = Math.min(...x) - 10;
     const xMaxBound = Math.max(...x) + 10;
@@ -161,14 +166,14 @@ function SingleRegression() {
           yaxis: { title: 'y-axis' }
       }
     }
-  })() : null;
+  }, [result, x, y]);
 
   return (
     <motion.div className="SingleRegression" 
       initial = {{ scale: 0.45 }} 
       animate = {{ scale: 1, x: 0, transition: { duration: 0.5, ease: 'circOut' } }}
     >
-      <h1>Linear Regression</h1>
+      <h1> Linear Regression </h1>
       
       {/* Input Size Control */}
       <div className='container-input'>
@@ -178,7 +183,8 @@ function SingleRegression() {
             <input 
               type      = "number" 
               value     = {size} 
-              onChange  = {handleSizeChange} 
+              onChange  = {handleSizeChange}
+              step      = "any" 
               min       = {MIN_INPUT_SIZE} 
               max       = {MAX_INPUT_SIZE}
             />
@@ -197,8 +203,8 @@ function SingleRegression() {
                 value     = {x[index]}
                 onChange  = {(e) => handleXChange(index, e.target.value)}
                 step      = "any"
-                min       = "-1000"
-                max       = "1000"
+                min       = {MIN_X_NUMBER}
+                max       = {MAX_X_NUMBER}
               />
             </label>
             <label>
@@ -208,8 +214,8 @@ function SingleRegression() {
                 value     = {y[index]}
                 onChange  = {(e) => handleYChange(index, e.target.value)}
                 step      = "any"
-                min       = "-32768"
-                max       = "32767"
+                min       = {MIN_Y_NUMBER}
+                max       = {MAX_Y_NUMBER}
               />
             </label>
           </div>
@@ -282,7 +288,8 @@ function SingleRegression() {
               <Plot
                 data = {plotData.data}
                 layout = {{
-                  ...plotData.layout
+                  ...plotData.layout,
+                  animation: false
                 }}
               />
             </div>
