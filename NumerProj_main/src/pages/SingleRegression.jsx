@@ -169,135 +169,140 @@ function SingleRegression() {
   }, [result, x, y]);
 
   return (
-    <motion.div className="SingleRegression" 
-      initial = {{ scale: 0.45 }} 
-      animate = {{ scale: 1, x: 0, transition: { duration: 0.5, ease: 'circOut' } }}
-    >
-      <h1> Linear Regression </h1>
-      
-      {/* Input Size Control */}
-      <div className='container-input'>
-        <div>
-          <label>
-            Size of Input (Number of Data Points):
-            <input 
-              type      = "number" 
-              value     = {size} 
-              onChange  = {handleSizeChange}
-              step      = "any" 
-              min       = {MIN_INPUT_SIZE} 
-              max       = {MAX_INPUT_SIZE}
-            />
-          </label>
-        </div>
-      </div>
-
-      {/* Input Section */}
-      <div className='container-input'>
-        {Array.from({ length: size }).map((_, index) => (
-          <div key={index}>
-            <label>
-              X Value {index + 1}:
-              <input
-                type      = "number"
-                value     = {x[index]}
-                onChange  = {(e) => handleXChange(index, e.target.value)}
-                step      = "any"
-                min       = {MIN_X_NUMBER}
-                max       = {MAX_X_NUMBER}
-              />
-            </label>
-            <label>
-              Y Value {index + 1}:
-              <input
-                type      = "number"
-                value     = {y[index]}
-                onChange  = {(e) => handleYChange(index, e.target.value)}
-                step      = "any"
-                min       = {MIN_Y_NUMBER}
-                max       = {MAX_Y_NUMBER}
-              />
-            </label>
-          </div>
-        ))}
-      </div>
-
-      {/* Degree Control */}
-      <div className='container-input'>
-        <div>
-          <label>
-            Degree:
-            <input type="number" value={degree} onChange={handleDegreeChange} />
-          </label>
-        </div>
-      </div>
-
-      {/* Calculate Button */}
-      <motion.button
-        className  = 'box'
-        onClick    = { async () => { await calculateRegression(); handleClick() }}
-        animate    = {isInputsValid() && isSufficientData() ? { scale: [1, 0.9, 1] } : { scale: 1 }} 
-        transition = {{ duration: 0.5, ease: 'circOut', repeat: Infinity, repeatType: 'mirror', repeatDelay: 0.5 }}
-        whileTap   = {{ scale: 0.8, transition: { duration: 0.5, ease: 'circOut' } }}
-        disabled   = {!(isInputsValid() && isSufficientData())}
+    <>
+      <motion.div className="SingleRegression" 
+        initial = {{ scale: 0.45 }} 
+        animate = {{ scale: 1, x: 0, transition: { duration: 0.5, ease: 'circOut' } }}
       >
-        Calculate Regression
-      </motion.button>
-
-      {/* Error Messages */}
-      {error && <div style = {{ color: 'red' }}>
-        <h3> {error} </h3>
-      </div>}
-
-      {!isInputsValid() && <div style = {{ color: 'red' }}>
-        <h3> All X and Y values must be valid numbers. </h3>
-      </div>}
-
-      {!isSufficientData() && <div style = {{ color: 'red' }}>
-        <h3> The datas should more than degree. </h3>
-      </div>}
-      
-      {/* Results Section */}
-      {(result && isInputsValid()) && isSufficientData() && (
-        <motion.div
-          ref        = {resultSectionRef} 
-          className  = 'container-flex'
-          initial    = {{ opacity: 0 }}
-          animate    = {{ opacity: 1 }}
-          transition = {{ duration: 0.5, ease: "backInOut" }}
-        >
-          <h2>Regression Result:</h2>
-          <div className='container-scroll'>
-            <h3>Matrix:</h3>
-            <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.matrix.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`) }} />
-          </div>
-          <div className='container-grid-2'>
-            <div>
-              <h3>Solution:</h3>
-              <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.solution.join(' \\\\ ')} \\end{bmatrix}`) }} />
-            </div>
-            <div>
-              <h3>Answer:</h3>
-              <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${resultKatexDegreeSetter(result.answer).join(' \\\\ ')} \\end{bmatrix}`) }} />
-            </div>
-          </div>
-
-          {/* Plot section */}
-          {plotData && (
-            <div className='container-plot'>
-              <Plot
-                data = {plotData.data}
-                layout = {{
-                  ...plotData.layout,
-                  animation: false
-                }}
+        <h1> Linear Regression </h1>
+        
+        {/* Input Size Control */}
+        <div className='container-input'>
+          <div>
+            <label>
+              Size of Input (Number of Data Points):
+              <input
+                id        = {'size'} 
+                type      = "number" 
+                value     = {size} 
+                onChange  = {handleSizeChange}
+                step      = "any" 
+                min       = {MIN_INPUT_SIZE} 
+                max       = {MAX_INPUT_SIZE}
               />
-            </div>
-          )}
+            </label>
+          </div>
+        </div>
 
-        </motion.div>
-      )}
-    </motion.div>
+        {/* Input Section */}
+        <div className='container-input'>
+          {Array.from({ length: size }).map((_, index) => (
+            <div key={index}>
+              <label>
+                X Value {index + 1}:
+                <input
+                  id        = {`X-${index}`}
+                  type      = "number"
+                  value     = {x[index]}
+                  onChange  = {(e) => handleXChange(index, e.target.value)}
+                  step      = "any"
+                  min       = {MIN_X_NUMBER}
+                  max       = {MAX_X_NUMBER}
+                />
+              </label>
+              <label>
+                Y Value {index + 1}:
+                <input
+                  id        = {`Y-${index}`}
+                  type      = "number"
+                  value     = {y[index]}
+                  onChange  = {(e) => handleYChange(index, e.target.value)}
+                  step      = "any"
+                  min       = {MIN_Y_NUMBER}
+                  max       = {MAX_Y_NUMBER}
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+
+        {/* Degree Control */}
+        <div className='container-input'>
+          <div>
+            <label>
+              Degree:
+              <input type="number" value={degree} onChange={handleDegreeChange} />
+            </label>
+          </div>
+        </div>
+
+        {/* Calculate Button */}
+        <motion.button
+          className  = 'box'
+          onClick    = { async () => { await calculateRegression(); handleClick() }}
+          animate    = {isInputsValid() && isSufficientData() ? { scale: [1, 0.9, 1] } : { scale: 1 }} 
+          transition = {{ duration: 0.5, ease: 'circOut', repeat: Infinity, repeatType: 'mirror', repeatDelay: 0.5 }}
+          whileTap   = {{ scale: 0.8, transition: { duration: 0.5, ease: 'circOut' } }}
+          disabled   = {!(isInputsValid() && isSufficientData())}
+        >
+          Calculate Regression
+        </motion.button>
+
+        {/* Error Messages */}
+        {error && <div style = {{ color: 'red' }}>
+          <h3> {error} </h3>
+        </div>}
+
+        {!isInputsValid() && <div style = {{ color: 'red' }}>
+          <h3> All X and Y values must be valid numbers. </h3>
+        </div>}
+
+        {!isSufficientData() && <div style = {{ color: 'red' }}>
+          <h3> The datas should more than degree. </h3>
+        </div>}
+        
+        {/* Results Section */}
+        {(result && isInputsValid()) && isSufficientData() && (
+          <motion.div
+            ref        = {resultSectionRef} 
+            className  = 'container-flex'
+            initial    = {{ opacity: 0 }}
+            animate    = {{ opacity: 1 }}
+            transition = {{ duration: 0.5, ease: "backInOut" }}
+          >
+            <h2>Regression Result:</h2>
+            <div className='container-scroll'>
+              <h3>Matrix:</h3>
+              <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.matrix.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`) }} />
+            </div>
+            <div className='container-grid-2'>
+              <div>
+                <h3>Solution:</h3>
+                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.solution.join(' \\\\ ')} \\end{bmatrix}`) }} />
+              </div>
+              <div>
+                <h3>Answer:</h3>
+                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${resultKatexDegreeSetter(result.answer).join(' \\\\ ')} \\end{bmatrix}`) }} />
+              </div>
+            </div>
+
+            {/* Plot section */}
+            {plotData && (
+              <div className='container-plot'>
+                <Plot
+                  data = {plotData.data}
+                  layout = {{
+                    ...plotData.layout,
+                    animation: false
+                  }}
+                />
+              </div>
+            )}
+
+          </motion.div>
+        )}
+      </motion.div>
+    </>
   );
 }
 

@@ -107,3 +107,12 @@
     rgba(255,43,84,1) 100%
   );
 }
+
+.warning {
+  display: block;
+  padding: 12px;
+  margin: auto;
+  border-radius: 6px;
+  background-color: rgb(242, 222, 222);
+  color: rgb(185, 74, 72);
+}

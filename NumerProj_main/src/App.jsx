@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import init from './pkg/cal_core.js';
 import WasmLoader from './components/WasmLoader.jsx';
 import WasmError from './components/WasmError.jsx';
-import SingleRegression from "./pages/SingleRegression.jsx";
+
+import CholeskyLinear from './pages/CholeskyLinear.jsx';
+import CramerLinear from "./pages/CramerLinear.jsx";
+import GuassNaiveLinear from './pages/GuassNaiveLinear.jsx';
+import GuassJordanLinear from './pages/GuassJordanLinear.jsx';
+import InverseMatrixLinear from './pages/InverseMatrixLinear.jsx';
+import LULinear from './pages/LULinear.jsx';
+
 import MultipleRegression from "./pages/MultipleRegression.jsx";
+import SingleRegression from "./pages/SingleRegression.jsx";
+
 import './App.css'
 
 function App() {
@@ -41,8 +51,14 @@ function App() {
       <Router>
         <Routes>
           <Route pate="/" element={<App />} />
-          <Route path="/SingleRegression" element={<SingleRegression />} />
+          <Route path="/CholeskyLinear" element={<CholeskyLinear />} />
+          <Route path="/CramerLinear" element={<CramerLinear />} />
+          <Route path="/GuassJordanLinear" element={<GuassJordanLinear />} />
+          <Route path="/GuassNaiveLinear" element={<GuassNaiveLinear />} />
+          <Route path="/InverseMatrixLinear" element={<InverseMatrixLinear />} />
+          <Route path="/LULinear" element={<LULinear />} />
           <Route path="/MultipleRegression" element={<MultipleRegression />} />
+          <Route path="/SingleRegression" element={<SingleRegression />} />
         </Routes>
       </Router>
     </div>

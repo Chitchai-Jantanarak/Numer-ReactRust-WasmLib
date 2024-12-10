@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { color, motion } from "motion/react";
+import { useState, useEffect, useRef } from 'react';
+import { motion } from "motion/react";
 import { evaluate } from 'mathjs';
 import init, { mult_lsq_regression, combinations_regression } from '../pkg/cal_core.js';
 import Plot from 'react-plotly.js';
@@ -64,7 +64,6 @@ function MultipleRegression() {
 
   async function resultMathDegreeSetter(result) {
     let combinations = await combination(degree);    
-
     const degreed = result.map((value, i) => {
       return value + combinations[i].map((comb, j) => 
         comb !== 0 ? ` * x${j + 1}^${comb}` : '' ).join('');
@@ -96,8 +95,8 @@ function MultipleRegression() {
       console.log('Inputs: x:', x, 'y:', y, 'degree:', degree);
 
       await init(); // Initialize the WASM module
-      let d_input = degree.map(deg => deg - 1); // Rust is take degree as x - 1
-      let x_input = mapping_calculation(x);
+      const d_input = degree.map(deg => deg - 1); // Rust is take degree as x - 1
+      const x_input = mapping_calculation(x);
       const regressionResult = mult_lsq_regression(x_input, y, d_input);
 
       if (typeof regressionResult === 'string') {
@@ -127,7 +126,7 @@ function MultipleRegression() {
 
   const isInputsValid = () => {
     return (
-      x.every(row => row.every(value => value !== '' && !isNaN(value))) &&
+      x.every(row => row.every(value => value !== "" && !isNaN(value))) &&
       !y.some(value => value === "" || isNaN(value))
     )
   };  
@@ -283,7 +282,7 @@ function MultipleRegression() {
       initial = {{ scale: 0.45 }} 
       animate = {{ scale: 1, x: 0, transition: { duration: 0.5, ease: 'circOut' } }}
     >
-      <h2>  </h2>
+      <h4 className='warning'> This topic is lack of multiple degrees whenever,<br /> the graph is can't make as more 3 of data categories </h4>
 
       <h1> Multiple Regression </h1>
       
@@ -293,6 +292,7 @@ function MultipleRegression() {
           <label>
             Size of Input (Number of Data Points):
             <input 
+              id        = {'size'}
               type      = "number" 
               value     = {size} 
               onChange  = {handleSizeChange} 
@@ -310,6 +310,7 @@ function MultipleRegression() {
           <label>
             Datas Collection (Set of Data Points):
             <input 
+              id        = {'feature'}
               type      = "number" 
               value     = {feature} 
               onChange  = {handleFeatureChange}
@@ -324,32 +325,35 @@ function MultipleRegression() {
       {/* Input Section */}
       <div className='container-input'>
         {Array.from({ length: size }).map((_, i) => (
-            <div key={i} className='row'>
-                {Array.from({ length: feature }).map((_, j) => (
-                    <label key={`x-${i}-${j}`}>
-                    X[{i + 1}][{j + 1}]:
-                    <input
-                        type     = "number"
-                        value    = {x[i]?.[j] ?? ''}
-                        onChange = {(e) => handleXChange(i, j, e.target.value)}
-                        step     = "any"
-                        min      = {MIN_X_NUMBER}
-                        max      = {MAX_X_NUMBER}
-                    />
-                    </label>
-                ))}
-            <label key={`y-${i}`}>  {/* Unique key for each Y input */}
-                Y[{i + 1}]:
+          <div key={i} className='row'>
+            {Array.from({ length: feature }).map((_, j) => (
+              <label key={`x-${i}-${j}`}>
+                X[{i + 1}][{j + 1}]:
                 <input
+                    id       = {`x-${i}-${j}`}
                     type     = "number"
-                    value    = {y[i] ?? ''}
-                    onChange = {(e) => handleYChange(i, e.target.value)}
+                    value    = {x[i]?.[j] ?? ''}
+                    onChange = {(e) => handleXChange(i, j, e.target.value)}
                     step     = "any"
-                    min      = {MIN_Y_NUMBER}
-                    max      = {MAX_Y_NUMBER}
+                    min      = {MIN_X_NUMBER}
+                    max      = {MAX_X_NUMBER}
                 />
+              </label>
+            ))}
+
+            <label key={`y-${i}`}>  {/* Unique key for each Y input */}
+              Y[{i + 1}]:
+              <input
+                  id       = {`y-${i}`}
+                  type     = "number"
+                  value    = {y[i] ?? ''}
+                  onChange = {(e) => handleYChange(i, e.target.value)}
+                  step     = "any"
+                  min      = {MIN_Y_NUMBER}
+                  max      = {MAX_Y_NUMBER}
+              />
             </label>
-        </div>
+          </div>
         ))}
       </div>
 
@@ -360,6 +364,7 @@ function MultipleRegression() {
                 <label>
                     Degree {i + 1}:
                     <input 
+                        id       = {`degree-${i}`}
                         type     = "number" 
                         value    = {degree[i] || ''} 
                         onChange = {(e) => handleDegreeChange(i, e.target.value)} 
@@ -375,11 +380,11 @@ function MultipleRegression() {
       {/* Calculate Button */}
       <motion.button
         className  = 'box'
-        onClick    = { async () => { await calculateRegression(); handleClick() }}
-        animate    = {isInputsValid() && isSufficientData() && isSufficiendDegree() ? { scale: [1, 0.9, 1] } : { scale: 1 }} 
+        onClick    = { async () => { await calculateRegression(); handleClick() } }
+        animate    = { isInputsValid() && isSufficientData() && isSufficiendDegree() ? { scale: [1, 0.9, 1] } : { scale: 1 } } 
         transition = {{ duration: 0.5, ease: 'circOut', repeat: Infinity, repeatType: 'mirror', repeatDelay: 0.5 }}
         whileTap   = {{ scale: 0.8, transition: { duration: 0.5, ease: 'circOut' } }}
-        disabled   = {!(isInputsValid() && isSufficientData() && isSufficiendDegree())}
+        disabled   = { !(isInputsValid() && isSufficientData() && isSufficiendDegree()) }
       >
         Calculate Regression
       </motion.button>
