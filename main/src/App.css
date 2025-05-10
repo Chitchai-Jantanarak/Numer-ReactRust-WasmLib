@@ -1,9 +1,12 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
   scroll-behavior: smooth;
+}
+
+html {
+  transition: background-color ease-in 0.2s;
 }
 
 ::-webkit-scrollbar {
@@ -22,10 +25,6 @@
 ::-webkit-scrollbar-track {
   background: #c8c9db; /* Track color */
   border-radius: 3%; /* Rounded edges */
-}
-
-:root {
-
 }
 
 .box {
@@ -92,7 +91,7 @@
 .loader-box {
   width: 128px;
   height: 128px;
-  background-color: #ffffff;
+  position: relative;
 }
 
 .loader-outer-box {

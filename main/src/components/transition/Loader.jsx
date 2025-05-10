@@ -19,7 +19,7 @@ export default function Loader() {
                 }}
             >
                 <motion.div
-                    className = "loader-box"
+                    className = "loader-box bg-base-100"
                     animate = {{
                         scale: [0, 0.9, 0.75, 0.6, 0.9, 1],
                         borderRadius: ["10%", "25%", "50%", "10%", "25%", "10%"]

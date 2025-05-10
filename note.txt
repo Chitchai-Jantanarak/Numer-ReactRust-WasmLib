@@ -1,0 +1,112 @@
+/** copy file with recursive at pkg & src
+cp -r ../cal-core/pkg src/cal-core
+ ^  ^         ^            ^
+ |  |         |            |
+copy recur    f1           f2
+
+
+/** export as js to package
+wasm-pack build --target web
+
+/** Rust property
+Result<{unknown}, {unknown}>
+Result is a type that represents either success ([Ok]) or failure ([Err]).
+
+/** package lib export
+#[wasm_bindgen]
+
+return Err("Invalid function".to_string()),
+Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+
+if xl >= xr {
+        return Err("Invalid interval: xl must be less than xr".to_string());
+    }
+
+
+/** variant
+mut = mutable value
+str = slice string
+vec = dym arr
+
+#[cfg(test)]
+#[test]
+
+
+/** method
+.parse()    : convert variant to eval
+.unwrap()   : convert to <T>
+.powf(f64)  : decimal with unspecified digits
+.extend(vec || iter) : push as loop
+.take(usize): get size from vec
+.copied()   : as iterator copied by not referencing
+.into__()   : will change the ownership
+.fliter()   : collecting value as condition ( map can't take f64 cond. )
+slice.chunk(usize) : slice as chunk size
+
+/** Js MUST DO
+-- Root of equation -- ** Complete calc
+1: Bisection        - None
+2: False-Position   - None
+3: One-Point        - Convert to g(x) & check convergence fx
+4: Taylor           - Do Differential send as vec
+5: Newton           - Send fx + f'x
+6: Secent           - None
+
+-- Linear equation -- ** Complete calc
+Det calc, Dot prod, Mat Implementation
+1: Cramer's Rule    - None
+2: Naive Gauss      - None
+3: Gauss-Jordan     - None
+4: Matrix Inversion - None
+5: LU               - None
+6: Cholesky         - None
+--------------------------- TODO ------------------
+7: Jacobi           - None + Initial guess
+8: Gauss-Seidel     - None + Initial guess 
+9: Conjugate        - Initial guess
+More -> Over-Relaxation + Initial guess + omega (0-2)
+
+-- Interpolation --
+Linear, Quadratic, Polynomial
+1: Newton (Coeff)
+2: Lagrange
+3: Spline
+
+
+-- Least-Square Regression --    ** FINISH **                                                     
+Linear, Polynomial, Multiple
+Sum x Sum y Pow x Pow y
+=> Split calculation between function & evaluate
+** Remark the Multiple Polynomial is order equation by COMBINATION  
+& make limit degree
+
+-- Integration --
+1: Trapezoidal 
+2: Simpson's Rule ( 1/3, 3/8 )
+3: Romberg
+4: Gauss Integral ( Legendre )
+
+-- Differentation --
+1: Forward
+2: Backward
+3: Combination (Central)
+4: More Accuration
+
+const memoizedValue = useMemo(() => {
+  // Expensive computation or operation
+  return someComputedValue;
+}, [dependency1, dependency2, ...]);
+
+useEffect(() => {
+    // body
+}), [triggerer]
+
+useState [value, setter]
+ const isInputsValid = () => {
+    return (
+      x.every(row => row.every(value => value !== '' && !isNaN(value))) &&
+      !y.some(value => value === "" || isNaN(value))
+    )
+  };  
+
+useRef - setTarget => setLinker(Handler)
