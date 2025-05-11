@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from "motion/react";
-import init, { guass_jordan } from '../pkg/cal_core.js';
+import init, { guass_jordan } from '../wasm/cal_core.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 

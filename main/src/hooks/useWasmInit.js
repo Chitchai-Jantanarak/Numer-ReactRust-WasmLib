@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import init from '../pkg/cal_core.js';
+import init from '../wasm/cal_core.js';
 
 export default function useWasmInit(delay = 2000) {
   const [wasmStatus, setWasmStatus] = useState('loading');

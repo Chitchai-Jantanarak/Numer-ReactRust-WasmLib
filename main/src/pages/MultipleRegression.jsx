@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from "motion/react";
 import { evaluate } from 'mathjs';
-import init, { mult_lsq_regression, combinations_regression } from '../pkg/cal_core.js';
+import init, { mult_lsq_regression, combinations_regression } from '../wasm/cal_core.js';
 import Plot from 'react-plotly.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
