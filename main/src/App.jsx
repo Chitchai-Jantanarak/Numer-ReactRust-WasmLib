@@ -15,6 +15,7 @@ import Layout from './components/layout/Layout.jsx';
 import WasmGate from './components/wasm/WasmGate.jsx';
 import './App.css';
 import { ThemeProvider } from './components/ThemeProvider.jsx';
+import Test from './pages/Test.jsx';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -27,6 +28,8 @@ function AnimatedRoutes() {
           </div>} />
 
           <Route element={<Layout />}>
+            <Route path="/qwerty" element={<Test />} />
+
             <Route path="/CholeskyLinear" element={<CholeskyLinear />} />
             <Route path="/CramerLinear" element={<CramerLinear />} />
             <Route path="/GuassJordanLinear" element={<GuassJordanLinear />} />
