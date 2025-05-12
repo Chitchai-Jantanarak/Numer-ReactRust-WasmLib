@@ -1,0 +1,26 @@
+-- * -- 
+- Shape checker
+
+-- Root equations --
+- Taylor
+    I: equation
+    P: fetch equation to arr 
+- Newton raphson
+    I: equation
+    P: 1st 'equation
+
+-- Linear equations --
+- Jacobi & Guass Seidel & Over relaxation & Conjugate
+    I: init = initial guess
+
+-- Regression --
+- multi lsq
+    I: polynomial need iterative data key's grouping.
+- degree combinations (combinations_regression)
+    DESC: do a combinations for degrees from set of value.
+
+-- Integration --
+-   I: true_result calculate from jsx
+
+-- Differential --
+-   I: true_result calculate from jsx
