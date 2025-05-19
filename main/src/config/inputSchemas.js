@@ -655,53 +655,90 @@ export const inputSchemas = {
         }
       }
     },
+    guass: {
+      inputs: {
+        equation: { 
+          shape: () => null,
+          type: "string" 
+        },
+        xl: { 
+          shape: () => null,
+          type: "number", 
+          min: 1e-6, 
+          max: 1e6 
+        },
+        xr: { 
+          shape: () => null,
+          type: "number", 
+          min: 1e-6, 
+          max: 1e6 
+        },
+        points: {
+          shape: () => null,
+          type: "number",
+          min: 1,
+          max: 16
+        }
+      }
+    }
   },
   differential: {
-    size: {
-      label: "Differential order nth",
-      min: 1,
-      max: 4
-    },
-    inputs: {
-      x: { 
-        shape: () => null,
-        type: "number", 
-        min: 1e-4, 
-        max: 1e4 
-      },
-      h: { 
-        shape: () => null,
-        type: "select",
-        options: [
-          { value: 1e-8, label: "0.00000001" },
-          { value: 1e-7, label: "0.0000001" },
-          { value: 1e-6, label: "0.000001" },
-          { value: 1e-5, label: "0.00001" },
-          { value: 1e-4, label: "0.0001" },
-          { value: 1e-3, label: "0.001" },
-          { value: 1e-2, label: "0.01" },
-          { value: 5e-2, label: "0.05" },
-          { value: 1e-1, label: "0.1" },
-        ],
-      },
-      method_type: { 
-        shape: () => null,
-        type: "select", 
-        options: [
-          { value: 1, label: "Forward Difference" },
-          { value: 2, label: "Backward Difference" },
-          { value: 3, label: "Central Difference" },
-        ]
-      },
-      precision_type: {
-        shape: () => null,
-        type: "select",
-        options: [
-          { value: 1, label: "1st Precision" },
-          { value: 2, label: "2nd Precision" },
-          { value: 3, label: "3rd Precision" },
-        ]
-      },
+    derivative: {
+      inputs: {
+        equation: { 
+          shape: () => null,
+          type: "string" 
+        },
+        x: { 
+          shape: () => null,
+          type: "number", 
+          min: 1e-4, 
+          max: 1e4 
+        },
+        h: { 
+          shape: () => null,
+          type: "select",
+          options: [
+            { value: 1e-8, label: "0.00000001" },
+            { value: 1e-7, label: "0.0000001" },
+            { value: 1e-6, label: "0.000001" },
+            { value: 1e-5, label: "0.00001" },
+            { value: 1e-4, label: "0.0001" },
+            { value: 1e-3, label: "0.001" },
+            { value: 1e-2, label: "0.01" },
+            { value: 5e-2, label: "0.05" },
+            { value: 1e-1, label: "0.1" },
+          ],
+        },
+        method_type: { 
+          shape: () => null,
+          type: "select", 
+          options: [
+            { value: 1, label: "Forward Difference" },
+            { value: 2, label: "Backward Difference" },
+            { value: 3, label: "Central Difference" },
+          ]
+        },
+        precision_type: {
+          shape: () => null,
+          type: "select",
+          options: [
+            { value: 1, label: "1st Precision" },
+            { value: 2, label: "2nd Precision" },
+            { value: 3, label: "3rd Precision" },
+          ]
+        },
+        diff_times: {
+          shape: () => null,
+          type: "select",
+          options: [
+            { value: 1, label: "First derivative (f′)" },
+            { value: 2, label: "Second derivative (f″)" },
+            { value: 3, label: "Third derivative (f‴)" },
+            { value: 4, label: "Fourth derivative (f⁗)" },
+          ]
+        }
+      }
     }
   }
 }
