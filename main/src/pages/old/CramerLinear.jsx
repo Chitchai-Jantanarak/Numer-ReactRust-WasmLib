@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from "motion/react";
-import init, { inverse_matrix } from '../wasm/cal_core.js';
+import init, { cramer } from '../../wasm/cal_core.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
-function InverseMatrixLinear() {
+function CramerLinear() {
     const MIN_MATRIX_SIZE  = 2;
     const MAX_MATRIX_SIZE  = 10;
 
@@ -28,23 +28,23 @@ function InverseMatrixLinear() {
         }
     };
 
-    const calculateInverse = async () => {
+    const calculateCramer = async () => {
         try {
             setError(''); // Re-Setter
 
             await init();
             const mat_input = mat.flat();
-            const inverseResult = inverse_matrix(mat_input, size, ans);
+            const cramerResult = cramer(mat_input, size, ans);
 
-            if (typeof inverseResult === 'string') {                
-                setError(inverseResult)
-                throw new Error(inverseResult);
+            if (typeof cramerResult === 'string') {                
+                setError(cramerResult)
+                throw new Error(cramerResult);
             }
             
-            setResult(inverseResult)
-            console.log('guass Result:', inverseResult);
+            setResult(cramerResult)
+            console.log('Cramer Result:', cramerResult);
         } catch (error) {
-            console.error('Error running guass naive:', error);
+            console.error('Error running cramer:', error);
         }
     };
 
@@ -95,11 +95,11 @@ function InverseMatrixLinear() {
 
     return (
         <>
-            <motion.div className="InverseMatrixLinear" 
+            <motion.div className="CramerLinear" 
                 initial = {{ scale: 0.45 }} 
                 animate = {{ scale: 1, x: 0, transition: { duration: 0.5, ease: 'circOut' } }}
             >
-                <h1> Inverse Matrix Elimination </h1>
+                <h1> Cramer's Rule </h1>
 
                 {/* Input Size Control */}
                 <div className='container-input'>
@@ -151,7 +151,7 @@ function InverseMatrixLinear() {
                 {/* Calculate Button */}
                 <motion.button
                     className  = 'box'
-                    onClick    = { async () => { await calculateInverse(); handleClick() } }
+                    onClick    = { async () => { await calculateCramer(); handleClick() } }
                     animate    = { isInputsValid() ? { scale: [1, 0.9, 1] } : { scale: 1 } }
                     transition = {{ duration: 0.5, ease: 'circOut', repeat: Infinity, repeatType: 'mirror', repeatDelay: 0.5 }}
                     whileTap   = {{ scale: 0.8, transition: { duration: 0.5, ease: 'circOut' } }}
@@ -178,15 +178,15 @@ function InverseMatrixLinear() {
                         animate    = {{ opacity: 1 }}
                         transition = {{ duration: 0.5, ease: "backInOut" }}
                     >
-                        <h2> Result: </h2>
-                        <div className='container-grid-2'>
+                        <h2> Cramer's Result: </h2>
+                        <div className='container-scroll'>
                             <div>
-                                <h3>Matrix:</h3>
-                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${mat.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`) }} />
+                                <h3> True Value: </h3>
+                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`${result.det_true}`) }} ></div>
                             </div>
                             <div>
-                                <h3>Inverse Matrix:</h3>
-                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.inverse_mat.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`) }} />
+                                <h3> Solution Value: </h3>
+                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.det_iter.join(' \\\\ ')} \\end{bmatrix}`) }}></div>
                             </div>
                         </div>
                         <div>
@@ -200,4 +200,4 @@ function InverseMatrixLinear() {
     );
 }
 
-export default InverseMatrixLinear;
+export default CramerLinear;

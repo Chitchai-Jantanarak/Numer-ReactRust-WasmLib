@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from "motion/react";
-import init, { guass_jordan } from '../wasm/cal_core.js';
+import init, { lu_decomposition } from '../../wasm/cal_core.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
-function GuassJordanLinear() {
+function LULinear() {
     const MIN_MATRIX_SIZE  = 2;
     const MAX_MATRIX_SIZE  = 10;
 
@@ -28,23 +28,23 @@ function GuassJordanLinear() {
         }
     };
 
-    const calculateGuass = async () => {
+    const calculateDecomposition = async () => {
         try {
             setError(''); // Re-Setter
 
             await init();
             const mat_input = mat.flat();
-            const guassResult = guass_jordan(mat_input, size, ans);
+            const decompositionResult = lu_decomposition(mat_input, size, ans);
 
-            if (typeof guassResult === 'string') {                
-                setError(guassResult)
-                throw new Error(guassResult);
+            if (typeof decompositionResult === 'string') {                
+                setError(decompositionResult)
+                throw new Error(decompositionResult);
             }
             
-            setResult(guassResult)
-            console.log('Guass Result:', guassResult);
+            setResult(decompositionResult)
+            console.log('Decomposition Result:', decompositionResult);
         } catch (error) {
-            console.error('Error running guass jordan:', error);
+            console.error('Error running LU-decomposition:', error);
         }
     };
 
@@ -95,11 +95,11 @@ function GuassJordanLinear() {
 
     return (
         <>
-            <motion.div className="GuassJordanLinear" 
+            <motion.div className="LULinear" 
                 initial = {{ scale: 0.45 }} 
                 animate = {{ scale: 1, x: 0, transition: { duration: 0.5, ease: 'circOut' } }}
             >
-                <h1> Guassian Jordan Elimination </h1>
+                <h1> LU Decomposition </h1>
 
                 {/* Input Size Control */}
                 <div className='container-input'>
@@ -151,7 +151,7 @@ function GuassJordanLinear() {
                 {/* Calculate Button */}
                 <motion.button
                     className  = 'box'
-                    onClick    = { async () => { await calculateGuass(); handleClick() } }
+                    onClick    = { async () => { await calculateDecomposition(); handleClick() } }
                     animate    = { isInputsValid() ? { scale: [1, 0.9, 1] } : { scale: 1 } }
                     transition = {{ duration: 0.5, ease: 'circOut', repeat: Infinity, repeatType: 'mirror', repeatDelay: 0.5 }}
                     whileTap   = {{ scale: 0.8, transition: { duration: 0.5, ease: 'circOut' } }}
@@ -178,10 +178,27 @@ function GuassJordanLinear() {
                         animate    = {{ opacity: 1 }}
                         transition = {{ duration: 0.5, ease: "backInOut" }}
                     >
-                        <h2> Guass's Result: </h2>
-                        <div>
-                            <h3> Answer: </h3>
-                            <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.value.join(' \\\\ ')} \\end{bmatrix}`) }}></div>
+                        <h2> Result: </h2>
+                        <div className='container-grid-2'>
+                            <div>
+                                <h3>Lower:</h3>
+                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.lower_mat.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`) }} />
+                            </div>
+                            <div>
+                                <h3>Upper:</h3>
+                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.upper_mat.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`) }} />
+                            </div>
+                        </div>
+                        
+                        <div className='container-grid-2'>
+                            <div>
+                                <h3>Foward:</h3>
+                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.forward_value.join(' \\\\ ')} \\end{bmatrix}`) }}></div>
+                            </div>
+                            <div>
+                                <h3>Backward (Answer):</h3>
+                                <div dangerouslySetInnerHTML = {{ __html: renderLatex(`\\begin{bmatrix} ${result.backward_value.join(' \\\\ ')} \\end{bmatrix}`) }}></div>
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -190,4 +207,4 @@ function GuassJordanLinear() {
     );
 }
 
-export default GuassJordanLinear;
+export default LULinear;

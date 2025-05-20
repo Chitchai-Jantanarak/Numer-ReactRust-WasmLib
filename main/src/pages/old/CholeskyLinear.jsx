@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from "framer-motion"; // fixed import path for consistency
-import init, { cholesky } from '../wasm/cal_core.js';
+import init, { cholesky } from '../../wasm/cal_core.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
-import CpnTransition from '../components/transition/CpnTransition.jsx';
+import CpnTransition from '../../components/transition/CpnTransition.jsx';
 
 function CholeskyLinear() {
     const MIN_MATRIX_SIZE = 2;

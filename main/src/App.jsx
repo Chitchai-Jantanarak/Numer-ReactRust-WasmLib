@@ -1,21 +1,22 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 
-import CholeskyLinear from './pages/CholeskyLinear.jsx';
-import CramerLinear from "./pages/CramerLinear.jsx";
-import GuassNaiveLinear from './pages/GuassNaiveLinear.jsx';
-import GuassJordanLinear from './pages/GuassJordanLinear.jsx';
-import InverseMatrixLinear from './pages/InverseMatrixLinear.jsx';
-import LULinear from './pages/LULinear.jsx';
-import MultipleRegression from "./pages/MultipleRegression.jsx";
-import SingleRegression from "./pages/SingleRegression.jsx";
+import CholeskyLinear from './pages/old/CholeskyLinear.jsx';
+import CramerLinear from "./pages/old/CramerLinear.jsx";
+import GuassNaiveLinear from './pages/old/GuassNaiveLinear.jsx';
+import GuassJordanLinear from './pages/old/GuassJordanLinear.jsx';
+import InverseMatrixLinear from './pages/old/InverseMatrixLinear.jsx';
+import LULinear from './pages/old/LULinear.jsx';
+import MultipleRegression from "./pages/old/MultipleRegression.jsx";
+import SingleRegression from "./pages/old/SingleRegression.jsx";
+
+import Bisection from './pages/method/BisectionPage.jsx';
 
 import Layout from './components/layout/Layout.jsx';
+import { ThemeProvider } from './components/ThemeProvider.jsx';
 
 import WasmGate from './components/wasm/WasmGate.jsx';
 import './App.css';
-import { ThemeProvider } from './components/ThemeProvider.jsx';
-import Test from './pages/Test.jsx';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -27,9 +28,8 @@ function AnimatedRoutes() {
             <Link to={"/CholeskyLinear"}>test</Link> 
           </div>} />
 
-          <Route element={<Layout />}>
-            <Route path="/qwerty" element={<Test />} />
-
+          <Route element={<Layout />}>            
+            <Route path="/bisection" element={<Bisection />} />
             <Route path="/CholeskyLinear" element={<CholeskyLinear />} />
             <Route path="/CramerLinear" element={<CramerLinear />} />
             <Route path="/GuassJordanLinear" element={<GuassJordanLinear />} />
