@@ -144,16 +144,19 @@ pub(crate) fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result
         });
 
         if fx_mid * fx_right < 0.0 {
-            xr = xm;
+            xl = xm;
         }
         else {
-            xl = xm;
+            xr = xm;
         }
 
         err         = utils::error_calc(xm, xm_prev);
         xm_prev     = xm;
         xm          = bisection_calc(xl, xr);
 
+        if iter == 0 {
+            continue;
+        }
         if err < 1e-6 {
             break;
         }
@@ -194,10 +197,10 @@ pub(crate) fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> R
         });
 
         if fx_mid * fx_right < 0.0 {
-            xr = xm;
+            xl = xm;
         }
         else {
-            xl = xm;
+            xr = xm;
         }
 
         err     = utils::error_calc(xm, xm_prev);
