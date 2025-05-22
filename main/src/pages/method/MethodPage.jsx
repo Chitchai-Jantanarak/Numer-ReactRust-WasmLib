@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { ParamInput } from "../../components/ParamInput";
+import katex from "katex"
+import 'katex/dist/katex.min.css';
 import * as wasm from "../../wasm/cal_core.js"
 
 const MethodPage = ({
@@ -7,17 +9,27 @@ const MethodPage = ({
     methodSchema,
     exampleSchema,
     ioSchema,
-    externalParams
+    externalParams,
+    onInput,
+    onResult
 }) => {
     const [size, setSize] = useState(methodSchema.size?.min || 0);
     const [values, setValues] = useState({});
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [initialized, setInitialized] = useState(false);
 
-    // Initiate input form
+    // #region - Input form implementations
+
     useEffect(() => {
-        resetToDefault()
+      console.log("active");
+      
+      loadExample(exampleSchema);
+    }, [])
+
+    useEffect(() => {
+      resetToDefault()
     }, [size])
 
     const resetToDefault = () => {
@@ -93,6 +105,10 @@ const MethodPage = ({
         setSize(newSize);
     }
 
+    // #endregion
+
+    // #region - WASM data preparations, calculations
+
     const flattenToFloat64Array = ( mat ) => {
         const flat = [];
         const flatten = (arr) => {
@@ -134,14 +150,19 @@ const MethodPage = ({
         setError(null);
 
         try {
-            // Extract input params order based on ioSchema
-            const params = alignWASMparams(ioSchema, values, externalParams);
+          // Call-back for external params
+          if (onInput) onInput(values);
 
-            // call WASM
-            const wasmFn = ioSchema.fn;
-            const result = await wasm[wasmFn](...params);
+          // Extract input params order based on ioSchema
+          const params = alignWASMparams(ioSchema, values, externalParams);
+          
+          // Call WASM
+          const wasmFn = ioSchema.fn;
+          const result = await wasm[wasmFn](...params);
 
-            setResult(result);
+          setResult(result);
+          
+          if (onResult) onResult(result);
         }
         catch (err) {
             throw new Error(err.toString());
@@ -150,6 +171,38 @@ const MethodPage = ({
             setLoading(false);
         }
     }
+
+    // #endregion
+
+    // #region - Result renderer
+
+    const toLatex = (value) => {
+      if (typeof value === "number") {
+        return value.toPrecision(9).replace(/\.?0+$/, "");
+      }
+
+      if (Array.isArray(value)) {
+        if (value.length === 0) return "\\emptyset";
+        // Matrix form
+        if (Array.isArray(value[0])) {
+          return (
+            "\\begin{bmatrix}" +
+            value.map((r) => r.map((c) => toLatex(c)).join(" & ")).join(" \\\\ ") +
+            "\\end{bmatrix}"
+          );
+        } else {
+          return (
+            "\\begin{bmatrix}" +
+            value.map((c) => toLatex(c)).join(" \\\\ ") +
+            "\\end{bmatrix}"
+          );
+        }
+      }
+
+      return String(value);
+    }
+
+    // #endregion
 
     return (
     <div className="max-w-4xl mx-auto p-6">
@@ -214,7 +267,11 @@ const MethodPage = ({
       )}
 
       {/* Results section */}
-      {result && <div className="bg-white p-6 rounded-lg shadow-sm border">{renderResult()}</div>}
+      {result && (
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <pre className="whitespace-pre-wrap break-words">{JSON.stringify(result, null, 2)}</pre>
+        </div>
+      )}
     </div>
     );
 }

@@ -1,4 +1,4 @@
-"use client"
+import { LatexInput } from "./LatexInput"
 
 export const ParamInput = ({ param, values, onChange }) => {
   const { size, inputs } = param
@@ -149,11 +149,9 @@ export const ParamInput = ({ param, values, onChange }) => {
             return (
               <div key={name} className="space-y-1">
                 <label className="font-medium">{name.toUpperCase()}:</label>
-                <input
-                  type="text"
+                <LatexInput
                   value={values?.[name] ?? ""}
-                  onChange={(e) => handleScalarChange(name, e.target.value)}
-                  className="border rounded px-2 py-1 w-full"
+                  onChange={(val) => handleScalarChange(name, val)}
                 />
               </div>
             )
