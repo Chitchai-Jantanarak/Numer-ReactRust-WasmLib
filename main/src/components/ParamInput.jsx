@@ -1,4 +1,4 @@
-import { LatexInput } from "./LatexInput"
+import { ExpressionInput } from "./ExpressionInput"
 
 export const ParamInput = ({ param, values, onChange }) => {
   const { size, inputs } = param
@@ -33,7 +33,8 @@ export const ParamInput = ({ param, values, onChange }) => {
       newValue = clampValue(newValue, input.min, input.max)
     }
 
-    onChange?.({ ...values, [name]: newValue })
+    const updated = { ...values, [name]: newValue };
+    onChange?.(updated);
   }
 
   return (
@@ -45,12 +46,12 @@ export const ParamInput = ({ param, values, onChange }) => {
             type="number"
             min={size.min}
             max={size.max}
-            value={param.currentSize}
+            value={param.currentSize || size.min}
             onChange={(e) => {
               const val = Math.max(size.min, Math.min(size.max, Number.parseInt(e.target.value) || size.min))
               param.onSizeChange?.(val)
             }}
-            className="border rounded px-2 py-1 w-16"
+            className="input input-bordered w-full"
           />
         </div>
       )}
@@ -79,7 +80,7 @@ export const ParamInput = ({ param, values, onChange }) => {
                         const value = input.type === "number" ? Number.parseFloat(e.target.value) || 0 : e.target.value
                         handleMatInputChange(name, r, c, value)
                       }}
-                      className="border px-2 py-1 w-full text-center rounded"
+                      className="input input-bordered w-full"
                       min={input.min}
                       max={input.max}
                       step="any"
@@ -131,7 +132,7 @@ export const ParamInput = ({ param, values, onChange }) => {
                     const value = Number.parseFloat(e.target.value) || 0
                     handleScalarChange(name, value)
                   }}
-                  className="border rounded px-2 py-1 w-full"
+                  className="input input-bordered w-full"
                   min={input.min}
                   max={input.max}
                   step="any"
@@ -149,7 +150,8 @@ export const ParamInput = ({ param, values, onChange }) => {
             return (
               <div key={name} className="space-y-1">
                 <label className="font-medium">{name.toUpperCase()}:</label>
-                <LatexInput
+                <ExpressionInput
+                  key={`${name}-${values?.[name] || "empty"}`}
                   value={values?.[name] ?? ""}
                   onChange={(val) => handleScalarChange(name, val)}
                 />

@@ -5,9 +5,9 @@ import { exampleSchemas } from "../../config/exampleSchemas"
 
 export default function Bisection() {
   const externalParams = {}
-  const methodSchema = inputSchemas.root_equation.bisection
-  const ioSchema = ioSchemas.root_equation.bisection
-  const exampleSchema = exampleSchemas.root_equation.bisection
+  const methodSchema = inputSchemas.linear_equation.LU
+  const ioSchema = ioSchemas.linear_equation.LU
+  const exampleSchema = exampleSchemas.linear_equation.guass_naive
 
   return (
     <MethodPage

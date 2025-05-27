@@ -208,6 +208,7 @@ export const exampleSchemas = {
         {
           name: "Example 1: 3 Points",
           inputs: {
+            size: 3,
             x: [[1, 2, 3]],
             y: [[1, 4, 9]],
             target_x: 2.5,
@@ -216,6 +217,7 @@ export const exampleSchemas = {
         {
           name: "Example 2: 4 Points",
           inputs: {
+            size: 4,
             x: [[0, 1, 2, 3]],
             y: [[1, 2, 4, 8]],
             target_x: 1.5,

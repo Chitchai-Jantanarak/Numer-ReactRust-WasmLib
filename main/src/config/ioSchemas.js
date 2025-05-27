@@ -76,7 +76,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.CramerResult
@@ -86,7 +86,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.GuassResult
@@ -96,7 +96,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.GuassResult
@@ -106,7 +106,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.InverseResult
@@ -116,7 +116,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.DecompositionResult
@@ -126,7 +126,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.DecompositionResult
@@ -136,7 +136,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans", "init"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.DecompositionResult
@@ -146,7 +146,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans", "init"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.LinearIterationResult
@@ -156,7 +156,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans", "init", "omega"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.LinearIterationResult
@@ -166,7 +166,7 @@ export const ioSchemas = {
             inputs: ["mat", "rows", "ans", "init"],
             map: {
                 "mat": "A",
-                "rows": "r",
+                "rows": "size",
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.ConjugateResult

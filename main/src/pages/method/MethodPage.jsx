@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ParamInput } from "../../components/ParamInput";
 import katex from "katex"
 import 'katex/dist/katex.min.css';
@@ -11,7 +11,8 @@ const MethodPage = ({
     ioSchema,
     externalParams,
     onInput,
-    onResult
+    onResult,
+    useSizeIndicators
 }) => {
     const [size, setSize] = useState(methodSchema.size?.min || 0);
     const [values, setValues] = useState({});
@@ -20,19 +21,38 @@ const MethodPage = ({
     const [loading, setLoading] = useState(false);
     const [initialized, setInitialized] = useState(false);
 
+    const hasLoadedExample = useRef(false);
+    const isResetting = useRef(false);
+
     // #region - Input form implementations
 
     useEffect(() => {
-      console.log("active");
-      
-      loadExample(exampleSchema);
-    }, [])
+      console.log("Page mounted, trying to load initial example");
+      if (exampleSchema?.examples?.length > 0 && !hasLoadedExample.current) {
+        const randomExample = exampleSchema.examples[
+          Math.floor(Math.random() * exampleSchema.examples.length)
+        ];
+        loadExample(randomExample);
+      } else {
+        resetToDefault();
+      }
+      setInitialized(true);
+    }, []);
 
     useEffect(() => {
-      resetToDefault()
-    }, [size])
+      if (!initialized) return;
+
+      if (!hasLoadedExample.current) {
+        resetToDefault();
+      }
+      else {
+        hasLoadedExample.current = false;
+      }
+    }, [size, initialized])
 
     const resetToDefault = () => {
+        isResetting.current = true;
+
         const defaultValues = {};
 
         Object.entries(methodSchema.inputs).forEach(([name, input]) => {
@@ -61,48 +81,64 @@ const MethodPage = ({
         setValues(defaultValues);
         setResult(null);
         setError(null);
+
+        setTimeout(() => {
+          isResetting.current = false;
+        }, 200);
     }
 
     const loadExample = (example) => {
-        if (example == null) return new Error(`Missing example Schemas : "${example}"`);
+        if (!example?.inputs) return new Error("Invalid example: ", example);
         
-        // Is size is existed on method schemas
-        const defaultSize = methodSchema.size ? 1 : 0;
-        if (!defaultSize) return; 
-        
+        hasLoadedExample.current = true;
         // Is Shape Defined get the depth of size
         const sizeDepInput = Object.entries(methodSchema.inputs).find(([_, input]) => {
             const shape = input.shape && typeof input.shape === "function" ? input.shape(1) : null;
             return shape && Array.isArray(shape);
         })
-        if (!sizeDepInput) return;
 
-        const [name] = sizeDepInput;
-        const inputData = example.inputs[name];
-        const shape = methodSchema.inputs[name].shape(0);
-
-        if (!Array.isArray(inputData)) return new Error(`Invalid example input for "${name}"`);
         
-        let exampleSize;
-        if (shape[0] === 1) {
-            exampleSize = inputData[0]?.length ?? 0;
-        } else if (shape[1] === 1) {
-            exampleSize = inputData.length;
-        } else if (shape[0] === shape[1]) {
-            exampleSize = inputData.length;
-        } else {
-            return new Error(`Unformatted 2D shape: ${shape}`);
+        if (sizeDepInput) {
+          const [name] = sizeDepInput;
+          const inputData = example.inputs[name];
+          
+          if (Array.isArray(inputData)) {
+            const shape = methodSchema.inputs[name].shape(0);
+            let exampleSize;
+            if (shape[0] === 1) {
+                exampleSize = inputData[0]?.length ?? 0;
+            } else if (shape[1] === 1) {
+                exampleSize = inputData.length;
+            } else if (shape[0] === shape[1]) {
+                exampleSize = inputData.length;
+            } else {
+                return new Error(`Unformatted 2D shape: ${shape}`);
+            }
+
+            if (Number.isInteger(exampleSize) && exampleSize > 0) {
+                setSize(exampleSize);
+            }
+          }  
         }
 
-        if (!Number.isInteger(exampleSize) || exampleSize <= 0) {
-            return new Error(`Could not infer valid size from: ${name}`);
-        }
-
-        setSize(exampleSize);
+        const newValues = { ...example.inputs };
+        console.log(newValues);
+        
+        setValues(newValues);
+        setResult(null);
+        setError(null);
     }
 
     const handleSizeChange = (newSize) => {
         setSize(newSize);
+    }
+
+    const handleExampleClick = (example) => {
+        loadExample(example);
+    };
+
+    const handleValuesChange = (newValues) => {
+      setValues(newValues);
     }
 
     // #endregion
@@ -126,7 +162,7 @@ const MethodPage = ({
         const { inputs, map = {} } = ioSchema;
          
         const aligned = [];
-
+        
         for (const inputKey of inputs) {
             const actualKey = map[inputKey] || inputKey;
 
@@ -150,11 +186,13 @@ const MethodPage = ({
         setError(null);
 
         try {
+          const paramsObj = useSizeIndicators ? values : { ...values, size };
+
           // Call-back for external params
-          if (onInput) onInput(values);
+          if (onInput) onInput(paramsObj);
 
           // Extract input params order based on ioSchema
-          const params = alignWASMparams(ioSchema, values, externalParams);
+          const params = alignWASMparams(ioSchema, paramsObj, externalParams);
           
           // Call WASM
           const wasmFn = ioSchema.fn;
@@ -204,19 +242,23 @@ const MethodPage = ({
 
     // #endregion
 
+    if (!initialized) {
+      return <div className="max-w-4xl mx-auto p-6">Loading...</div>
+    }
+
     return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">{methodName}</h1>
 
       {/* Examples section - only show if examples exist */}
-      {exampleSchema && exampleSchema.examples && exampleSchema.examples.length > 0 && (
+      {exampleSchema?.examples?.length > 0 && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-2">Examples</h2>
           <div className="flex flex-wrap gap-2">
             {exampleSchema.examples.map((example, idx) => (
               <button
                 key={idx}
-                onClick={() => loadExample(example)}
+                onClick={() => handleExampleClick(example)}
                 className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-blue-800 text-sm"
               >
                 {example.name}
@@ -233,7 +275,7 @@ const MethodPage = ({
       )}
 
       {/* Input parameters */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
+      <div className="p-6 rounded-lg shadow-sm border mb-6">
         <h2 className="text-lg font-semibold mb-4">Input Parameters</h2>
 
         <ParamInput
@@ -244,7 +286,7 @@ const MethodPage = ({
             onSizeChange: handleSizeChange,
           }}
           values={values}
-          onChange={setValues}
+          onChange={handleValuesChange}
         />
 
         <div className="mt-6">
