@@ -151,7 +151,7 @@ export const ParamInput = ({ param, values, onChange }) => {
               <div key={name} className="space-y-1">
                 <label className="font-medium">{name.toUpperCase()}:</label>
                 <ExpressionInput
-                  key={`${name}-${values?.[name] || "empty"}`}
+                  key={`${name}-expression || "empty"}`}
                   value={values?.[name] ?? ""}
                   onChange={(val) => handleScalarChange(name, val)}
                 />

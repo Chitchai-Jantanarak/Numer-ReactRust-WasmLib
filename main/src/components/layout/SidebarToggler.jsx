@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { X, Menu } from "lucide-react";
 
-import IconWrapper from "../IconWrapper"
+import IconWrapper from "../common/IconWrapper"
 
 const SidebarToggler = ({isSidebarVisible, toggleSidebar}) => {
     return (

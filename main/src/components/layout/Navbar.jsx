@@ -1,7 +1,7 @@
 import SidebarToggler from "./SidebarToggler";
 import ThemeChanger from "./ThemeChanger";
 
-import IconWrapper from "../IconWrapper";
+import IconWrapper from "../common/IconWrapper";
 
 const Navbar = ( {toggleSidebar, isSidebarVisible} ) => {
     return (

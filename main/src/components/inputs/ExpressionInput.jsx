@@ -10,61 +10,46 @@ export const ExpressionInput = ({ value, onChange }) => {
     const [isValid, setIsValid] = useState(true);
 
     const debounceRef = useRef(null);
-    const isUpdating = useRef(false);
     const lastSentValueRef = useRef(value);
 
     useEffect(() => {
         if (value !== lastSentValueRef.current && value !== localValue) {
-            isUpdating.current = true;
             setLocalValue(value || "");
             lastSentValueRef.current = value;
 
-            clearTimeout(debounceRef.current);
-            if (value && value.trim()) {
-                try {
-                const node = parse(value)
+            try {
+                const node = parse(value || "");
                 const tex = node.toTex({ ParenthesisNode: "keep", implicit: "show" })
-                setLatex(tex)
-                setIsValid(true)
-                setError("")
-                } catch (err) {
-                setLatex("")
-                setIsValid(false)
-                setError(err.message)
-                }
-            } else {
-                setLatex("")
-                setIsValid(true)
-                setError("")
+                setLatex(tex);
+                setIsValid(true);
+                setError("");
+            } catch (err) {
+                setLatex("");
+                setIsValid(false);
+                setError(err.message);
             }
-
-            setTimeout(() => {
-                isUpdatingFromProp.current = false
-            }, 100)
         }
     }, [value]);
 
     useEffect(() => {
-        if (isUpdating.current) return;
-
         clearTimeout(debounceRef.current);
 
         debounceRef.current = setTimeout(() => {
-            if (!localValue.trim()) {
+            const trimmed = localValue.trim();
+
+            if (!trimmed) {
                 setLatex("");
                 setIsValid(true);
                 setError("");
-
                 if (lastSentValueRef.current !== "") {
                     lastSentValueRef.current = ""
                     onChange?.("")
                 }
-
                 return;
             }
 
             try {
-                const node = parse(localValue);
+                const node = parse(trimmed);
                 const parsed = node.toString({ implicit: 'show' });
                 const tex = node.toTex({ ParenthesisNode: 'keep', implicit: 'show' });
 
@@ -91,12 +76,25 @@ export const ExpressionInput = ({ value, onChange }) => {
         setLocalValue(newValue);
     }
 
+    const handleBlur = () => {
+        try {
+            const node = parse(localValue);
+            const parsed = node.toString({ implicit: "show" });
+            if (parsed !== localValue) {
+                setLocalValue(parsed);
+                lastSentValueRef.current = parsed;
+                onChange?.(parsed);
+            }
+        } catch (_) {}
+    }
+
     return (
         <div className="relative w-full space-y-2">
             <input
                 type="text"
                 value={localValue}
                 onChange={handleInputChange}
+                onBlur={handleBlur}
                 className="input input-bordered w-full"
                 placeholder="Type a math expression"
             />

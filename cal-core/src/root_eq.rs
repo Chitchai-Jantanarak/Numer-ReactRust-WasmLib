@@ -126,8 +126,8 @@ pub(crate) fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result
 
     let mut result  : Vec<BisectionResult>  = Vec::new();
     let mut xm      : f64                   = bisection_calc(xl, xr);
-    let mut xm_prev : f64                   = xm;
     let mut err     : f64                   = 100.0;
+    let mut xm_prev : f64;
 
     for iter in 0..100 {
 
@@ -150,13 +150,10 @@ pub(crate) fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result
             xr = xm;
         }
 
-        err         = utils::error_calc(xm, xm_prev);
         xm_prev     = xm;
         xm          = bisection_calc(xl, xr);
-
-        if iter == 0 {
-            continue;
-        }
+        err         = utils::error_calc(xm, xm_prev);
+        
         if err < 1e-6 {
             break;
         }
@@ -176,9 +173,9 @@ pub(crate) fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> R
     }
 
     let mut result  : Vec<FalsePositionResult>  = Vec::new();
-    let mut xm      : f64                       = 0.0;
-    let mut xm_prev : f64                       = xm;
     let mut err     : f64                       = 100.0;
+    let mut xm      : f64;
+    let mut xm_prev : f64;
 
     for iter in 0..100 {
 
@@ -203,8 +200,8 @@ pub(crate) fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> R
             xr = xm;
         }
 
-        err     = utils::error_calc(xm, xm_prev);
         xm_prev = xm;
+        err     = utils::error_calc(xm, xm_prev);
 
         if err < 1e-6 {
             break;

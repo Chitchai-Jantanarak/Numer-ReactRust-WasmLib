@@ -21,6 +21,7 @@ import { outputStructs } from "./outputStructs";
  *      inputs: string[],
  *      map?: string[],
  *      outputs: object // Output structure spec 
+ *      display: string[], // "table", "2DGraph", "3DGraph"
  *  }
  * 
  *  @property {object}   topic                - Display the topic.
@@ -30,13 +31,15 @@ import { outputStructs } from "./outputStructs";
  *  @property {Array}    inputs               - Wasm's input params name.
  *  @property {Array}    map                  - Name for mapping between configs.
  *  @property {object}   outputs              - Wasm's output structure @see outputStructs
+ *  @property {Array}    display              - Result display type ["table", "2DGraph", "3DGraph"]
  */
 export const ioSchemas = {
     root_equation: {
         bisection: {
             fn: "bisection",
             inputs: ["equation", "xl", "xr"],
-            outputs: outputStructs.root_equation.BisectionResult
+            outputs: outputStructs.root_equation.BisectionResult,
+            display: ["table"]
         },
         false_position: {
             fn: "false_position",

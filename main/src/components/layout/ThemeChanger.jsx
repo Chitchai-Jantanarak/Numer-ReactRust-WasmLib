@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { SunIcon, MoonIcon } from "lucide-react";
 
-import IconWrapper from "../IconWrapper";
+import IconWrapper from "../common/IconWrapper";
 import { useTheme } from "../../hooks/useTheme";
 
 const ThemeChanger = () => {

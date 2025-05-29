@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { ParamInput } from "../../components/ParamInput";
+import { ParamInput } from "../../components/inputs/ParamInput.jsx";
 import katex from "katex"
 import 'katex/dist/katex.min.css';
 import * as wasm from "../../wasm/cal_core.js"
+import OutputPanel from "../../components/outputs/OutputPanel.jsx";
 
 const MethodPage = ({
     methodName,
@@ -197,7 +198,8 @@ const MethodPage = ({
           // Call WASM
           const wasmFn = ioSchema.fn;
           const result = await wasm[wasmFn](...params);
-
+          console.log(result);
+          
           setResult(result);
           
           if (onResult) onResult(result);
@@ -310,8 +312,12 @@ const MethodPage = ({
 
       {/* Results section */}
       {result && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <pre className="whitespace-pre-wrap break-words">{JSON.stringify(result, null, 2)}</pre>
+        <div className="p-6 rounded-lg shadow-sm border">
+          {/* <pre className="whitespace-pre-wrap break-words">{JSON.stringify(result, null, 2)}</pre> */}
+          
+          {ioSchema.display && (
+            <OutputPanel ioDisplay={ioSchema.display} result={result} />
+          )}
         </div>
       )}
     </div>

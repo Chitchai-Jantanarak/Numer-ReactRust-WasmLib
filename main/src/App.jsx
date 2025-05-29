@@ -13,7 +13,7 @@ import SingleRegression from "./pages/old/SingleRegression.jsx";
 import Bisection from './pages/method/BisectionPage.jsx';
 
 import Layout from './components/layout/Layout.jsx';
-import { ThemeProvider } from './components/ThemeProvider.jsx';
+import { ThemeProvider } from './components/providers/ThemeProvider.jsx';
 
 import WasmGate from './components/wasm/WasmGate.jsx';
 import './App.css';
