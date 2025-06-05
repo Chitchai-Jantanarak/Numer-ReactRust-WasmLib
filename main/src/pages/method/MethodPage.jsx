@@ -28,7 +28,6 @@ const MethodPage = ({
     // #region - Input form implementations
 
     useEffect(() => {
-      console.log("Page mounted, trying to load initial example");
       if (exampleSchema?.examples?.length > 0 && !hasLoadedExample.current) {
         const randomExample = exampleSchema.examples[
           Math.floor(Math.random() * exampleSchema.examples.length)
@@ -123,7 +122,6 @@ const MethodPage = ({
         }
 
         const newValues = { ...example.inputs };
-        console.log(newValues);
         
         setValues(newValues);
         setResult(null);
@@ -250,7 +248,7 @@ const MethodPage = ({
 
     return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">{methodName}</h1>
+      <h1 className="text-2xl font-bold mb-6">{methodName.toUpperCase()}</h1>
 
       {/* Examples section - only show if examples exist */}
       {exampleSchema?.examples?.length > 0 && (
@@ -316,7 +314,7 @@ const MethodPage = ({
           {/* <pre className="whitespace-pre-wrap break-words">{JSON.stringify(result, null, 2)}</pre> */}
           
           {ioSchema.display && (
-            <OutputPanel ioDisplay={ioSchema.display} result={result} />
+            <OutputPanel topic={methodName} ioDisplay={ioSchema.display} result={result}  />
           )}
         </div>
       )}

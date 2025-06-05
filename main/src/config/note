@@ -32,5 +32,13 @@ TODO! LIST :(
 - Graph maker
 
 
+Graph
+2D :
+- root eq : iter -: l, r 
+- interpolate : points -: line curve
+- regression : point to function
+- integrate : area graph, cut point
+- differential : ??
 
-
+3D :
+- conjugate gradient

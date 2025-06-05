@@ -31,7 +31,7 @@ import { outputStructs } from "./outputStructs";
  *  @property {Array}    inputs               - Wasm's input params name.
  *  @property {Array}    map                  - Name for mapping between configs.
  *  @property {object}   outputs              - Wasm's output structure @see outputStructs
- *  @property {Array}    display              - Result display type ["table", "2DGraph", "3DGraph"]
+ *  @property {Array}    display              - Result display type ["table", "graph2D", "graph3D"]
  */
 export const ioSchemas = {
     root_equation: {
@@ -39,7 +39,7 @@ export const ioSchemas = {
             fn: "bisection",
             inputs: ["equation", "xl", "xr"],
             outputs: outputStructs.root_equation.BisectionResult,
-            display: ["table"]
+            display: ["table", "graph2D"]
         },
         false_position: {
             fn: "false_position",

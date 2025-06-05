@@ -3,7 +3,6 @@ const TableMaker = ({ datas }) => {
     
     const entries = Object.entries(datas);
     const headers = entries.length > 0 ? Object.keys(entries[0][1]) : [];
-    console.log(headers);
     
     return (
         <>

@@ -11,7 +11,7 @@ export default function Bisection() {
 
   return (
     <MethodPage
-      methodName={"Bisection"}
+      methodName={"bisection"}
       methodSchema={methodSchema}
       exampleSchema={exampleSchema}
       ioSchema={ioSchema}
