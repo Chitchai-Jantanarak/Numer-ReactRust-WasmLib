@@ -11,15 +11,12 @@ export default class RootEquationRenderer extends BaseRenderer {
         const ZoomableScatterChart = withZoom(ScatterChart);
         const mapped = datas.map(({ xl, xr }) => ({ x: xl, y: xr }));
 
-        console.log(mapped);
-        
-
         return (
             <ResponsiveContainer width="100%" height="100%">
             <ZoomableScatterChart data={mapped}>
                 <CartesianGrid />
-                <XAxis dataKey="x" type="number" />
-                <YAxis dataKey="y" type="number" />
+                <XAxis dataKey="x" type="number" displayName="XAxis" tickFormatter={(val) => val.toFixed(6)} />
+                <YAxis dataKey="y" type="number" displayName="YAxis" tickFormatter={(val) => val.toFixed(6)} />
                 <Tooltip />
                 <Scatter data={mapped} fill="#8884d8" />
             </ZoomableScatterChart>
