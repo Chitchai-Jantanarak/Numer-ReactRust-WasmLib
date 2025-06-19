@@ -1,5 +1,6 @@
 import React, { useState, useRef, useMemo, useCallback } from "react"
 import { RefreshCcw, ZoomIn, ZoomOut } from "lucide-react"
+import { ReferenceLineWithTooltip } from "../utils/ReferenceLineWithTooltip";
 
 // NOTE: Before calling this wrapped do map the value as x, y first!
 export function withZoom(Wrapped) {
@@ -137,9 +138,7 @@ export function withZoom(Wrapped) {
             });
         };
 
-        const zoomOut = () => {
-            console.dir(history, {depth: 0})
-            
+        const zoomOut = () => {            
             if (history.length !== 0 && !isOuterZoom) {
                 const lastHistory = history[history.length - 1];
                 setHistory(prev => prev.slice(0, -1));
@@ -221,6 +220,9 @@ export function withZoom(Wrapped) {
                     <Wrapped {...rest} data={filteredData}>
                         {React.Children.map(children, child => {
                             if (!child) return null;
+
+                            console.log('Full Element:', child);
+
                             if (child.type?.displayName === 'XAxis') {
                                 return React.cloneElement(child, {
                                     domain: domain.x,
@@ -231,6 +233,12 @@ export function withZoom(Wrapped) {
                                 return React.cloneElement(child, {
                                     domain: domain.y,
                                     allowDataOverflow: true
+                                });
+                            }
+                            if (child.type?.displayName === 'ReferenceLineWithTooltip') {
+                                return React.cloneElement(child, {
+                                domain,
+                                containerRef
                                 });
                             }
                             return child;

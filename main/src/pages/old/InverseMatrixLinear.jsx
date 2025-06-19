@@ -7,7 +7,7 @@ import 'katex/dist/katex.min.css';
 function InverseMatrixLinear() {
     const MIN_MATRIX_SIZE  = 2;
     const MAX_MATRIX_SIZE  = 10;
-
+    
     const [size, setSize]       = useState(3);
     const [mat, setMat]         = useState([[1.2, 2.4, 4.8], [4.5, 5.6, 6.7], [7.8, 8.9, 10.0]]);
     const [ans, setAns]         = useState([3.5, 7.0, 10.25]);

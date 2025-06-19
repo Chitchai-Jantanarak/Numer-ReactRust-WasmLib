@@ -42,3 +42,7 @@ Graph
 
 3D :
 - conjugate gradient
+
+
+Overall :
+- Do add referenceLine by custom tooltips function that calc (size => px)
