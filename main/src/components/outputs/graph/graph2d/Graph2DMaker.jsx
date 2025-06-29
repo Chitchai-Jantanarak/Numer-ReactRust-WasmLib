@@ -9,15 +9,15 @@ const Graph2DMaker = ({ datas, context }) => {
         return null;
     }
     
-    const rendererInstance = RendererFactory.create(renderKey);
+    const RendererComponent = RendererFactory.create(renderKey);
 
-    if (!rendererInstance) {
+    if (!RendererComponent) {
         return (
             <div className="rounded bg-error"> Renderer not available </div>
         )
     }
 
-    return rendererInstance.render(datas);
+    return <RendererComponent datas={datas} />;
 }
 
 export default Graph2DMaker;

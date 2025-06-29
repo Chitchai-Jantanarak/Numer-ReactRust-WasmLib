@@ -12,7 +12,7 @@ class RendererFactory {
             return null;
         }
 
-        return new RendererClass();
+        return RendererClass;
     }
 }
 

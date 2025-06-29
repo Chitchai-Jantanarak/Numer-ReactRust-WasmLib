@@ -1,10 +1,11 @@
 import React, { useState, useRef, useMemo, useCallback } from "react"
 import { RefreshCcw, ZoomIn, ZoomOut } from "lucide-react"
-import { ReferenceLineWithTooltip } from "../utils/ReferenceLineWithTooltip";
 
 // NOTE: Before calling this wrapped do map the value as x, y first!
 export function withZoom(Wrapped) {
-    return function ZoomableChart({ children, data, ...rest }) {
+    return function ZoomableChart({ zoomData, children, ...rest }) {      
+        const data = zoomData;
+        
         const containerRef = useRef(null);
 
         const graphBound = useMemo(() => {
@@ -37,7 +38,7 @@ export function withZoom(Wrapped) {
             y: [graphBound.minY, graphBound.maxY]
         });
 
-        const filteredData = useMemo(() => {
+        const filteredData = useMemo(() => {            
             return data.filter(({ x, y }) =>
                 x >= domain.x[0] && x <= domain.x[1] &&
                 y >= domain.y[0] && y <= domain.y[1]
@@ -212,7 +213,16 @@ export function withZoom(Wrapped) {
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
-                    onMouseLeave={() => {
+                    onMouseLeave={(e) => {
+                        const related = e.relatedTarget;
+                        const tooltipEl = document.querySelector(".reference-tooltip");
+                        if (related instanceof Node && 
+                            containerRef && 
+                            (
+                                containerRef.current?.contains(related) || 
+                                (tooltipEl && tooltipEl.contains(related)))
+                            ) return;
+
                         setIsSelecting(false);
                         setSelection(null);
                     }}
@@ -220,27 +230,21 @@ export function withZoom(Wrapped) {
                     <Wrapped {...rest} data={filteredData}>
                         {React.Children.map(children, child => {
                             if (!child) return null;
-
-                            console.log('Full Element:', child);
-
-                            if (child.type?.displayName === 'XAxis') {
+                            const childName = child.type?.displayName || child.type?.name;                            
+                            
+                            if (childName === 'XAxis') {
                                 return React.cloneElement(child, {
                                     domain: domain.x,
                                     allowDataOverflow: true
                                 });
                             }
-                            if (child.type?.displayName === 'YAxis') {
+                            if (childName === 'YAxis') {
                                 return React.cloneElement(child, {
                                     domain: domain.y,
                                     allowDataOverflow: true
                                 });
                             }
-                            if (child.type?.displayName === 'ReferenceLineWithTooltip') {
-                                return React.cloneElement(child, {
-                                domain,
-                                containerRef
-                                });
-                            }
+
                             return child;
                         })}
                     </Wrapped>

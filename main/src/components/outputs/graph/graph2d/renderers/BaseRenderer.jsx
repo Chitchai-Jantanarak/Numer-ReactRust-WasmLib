@@ -1,4 +1,6 @@
-export default class BaseRenderer {
+import React from "react";
+
+export default class BaseRenderer extends React.Component {
     decorators = [];
     composeDecorators = (...decorators) => (BaseComponent) =>
         decorators.reduce((acc, decorator) => decorator(acc), BaseComponent);
@@ -16,12 +18,13 @@ export default class BaseRenderer {
         return null;
     };
 
-
+    // Abstract — subclasses must override 
     supports(topic, method) {
         throw new Error("BaseRenderer is an abstract class form");
     }
 
-    render(datas) {
+    // Abstract — subclasses must override
+    render() {
         throw new Error("BaseRenderer is an abstract class form");
     }
 
