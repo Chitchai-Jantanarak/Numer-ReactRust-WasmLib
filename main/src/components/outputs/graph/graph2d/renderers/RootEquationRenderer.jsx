@@ -27,6 +27,8 @@ export default class RootEquationRenderer extends BaseRenderer {
     const { datas } = this.props;
     const Chart = this.Chart;    
 
+    console.log(datas);
+    
     const axisConvertX = datas.flatMap(({ xl, xr }) => [xl, xr]);
     const axisConvertY = Object.values(axisConvertX)
     const mapped = axisConvertX.map((x, i) => ({
@@ -37,10 +39,7 @@ export default class RootEquationRenderer extends BaseRenderer {
     return (
       <>
         <ResponsiveContainer width="100%" height="100%">
-          <Chart 
-            data={datas}
-            zoomData={mapped}
-          >
+          <Chart data={datas} zoomData={mapped}>
             <XAxis dataKey="x" type="number" tickFormatter={(val) => val.toFixed(6)} />
             <YAxis dataKey="y" type="number" tickFormatter={(val) => val.toFixed(6)} />
             <CartesianGrid strokeDasharray={"10, 5, 5, 5"} opacity={0.6} />

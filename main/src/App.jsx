@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { useEffect, useRef } from "react"
 import { AnimatePresence } from 'motion/react';
+import Lenis from "lenis"
 
 import CholeskyLinear from './pages/old/CholeskyLinear.jsx';
 import CramerLinear from "./pages/old/CramerLinear.jsx";
@@ -45,6 +47,29 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  const lenis = useRef(null);
+  
+  useEffect(() => {
+    lenis.current = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: 1,
+      smoothWheel: 1,
+      smoothTouch: 1,
+      normalizeWheel: 1
+    });
+
+    const raf = (time) => {
+      lenis.current.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.current.destroy();
+    };
+  }, []);
+
   return (
     <div className="App">
       <ThemeProvider>

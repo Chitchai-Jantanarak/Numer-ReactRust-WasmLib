@@ -24,6 +24,7 @@ const MethodPage = ({
 
     const hasLoadedExample = useRef(false);
     const isResetting = useRef(false);
+    const resultRef = useRef(null);
 
     // #region - Input form implementations
 
@@ -130,6 +131,7 @@ const MethodPage = ({
 
     const handleSizeChange = (newSize) => {
         setSize(newSize);
+        setResult(null);
     }
 
     const handleExampleClick = (example) => {
@@ -137,7 +139,8 @@ const MethodPage = ({
     };
 
     const handleValuesChange = (newValues) => {
-      setValues(newValues);
+        setValues(newValues);
+        setResult(null);
     }
 
     // #endregion
@@ -191,7 +194,7 @@ const MethodPage = ({
           if (onInput) onInput(paramsObj);
 
           // Extract input params order based on ioSchema
-          const params = alignWASMparams(ioSchema, paramsObj, externalParams);
+          const params = alignWASMparams(ioSchema, paramsObj, externalParams);          
           
           // Call WASM
           const wasmFn = ioSchema.fn;
@@ -211,33 +214,13 @@ const MethodPage = ({
 
     // #endregion
 
-    // #region - Result renderer
+    // #region - Output renderer Helper function
 
-    const toLatex = (value) => {
-      if (typeof value === "number") {
-        return value.toPrecision(9).replace(/\.?0+$/, "");
+    useEffect(() => {
+      if (result && resultRef.current) {
+        resultRef.current.scrollIntoView({ behavior: "smooth" });
       }
-
-      if (Array.isArray(value)) {
-        if (value.length === 0) return "\\emptyset";
-        // Matrix form
-        if (Array.isArray(value[0])) {
-          return (
-            "\\begin{bmatrix}" +
-            value.map((r) => r.map((c) => toLatex(c)).join(" & ")).join(" \\\\ ") +
-            "\\end{bmatrix}"
-          );
-        } else {
-          return (
-            "\\begin{bmatrix}" +
-            value.map((c) => toLatex(c)).join(" \\\\ ") +
-            "\\end{bmatrix}"
-          );
-        }
-      }
-
-      return String(value);
-    }
+    }, [result]);
 
     // #endregion
 
@@ -309,11 +292,18 @@ const MethodPage = ({
 
       {/* Results section */}
       {result && (
-        <div className="p-6 rounded-lg shadow-sm border">
-          {/* <pre className="whitespace-pre-wrap break-words">{JSON.stringify(result, null, 2)}</pre> */}
-          
-          {ioSchema.display && (
-            <OutputPanel topic={methodName} ioDisplay={ioSchema.display} result={result}  />
+        <div ref={resultRef} className="p-6 rounded-lg shadow-sm border">
+          {/* Object result checkings */}
+          {ioSchema.display && typeof(result) === "object" ? (
+            <OutputPanel 
+              topic={methodName} 
+              ioDisplay={ioSchema.display} 
+              result={result}  
+            />
+          ) : (
+            <pre className="whitespace-pre-wrap break-words text-error">
+              {JSON.stringify(result, null, 2)}
+            </pre> 
           )}
         </div>
       )}
