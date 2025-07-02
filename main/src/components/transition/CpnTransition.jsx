@@ -32,21 +32,25 @@ const pageVariants = {
 
 const itemVariants = {
     initial: { opacity: 0, y: 20 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 24
-      }
-    },
     exit: {
       opacity: 0,
       y: -10,
       transition: {
         duration: 0.2
       }
+    },
+    whileInView: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      }
+    },
+    viewport: {
+      once: true,
+      amount: 0.5
     }
 };
 

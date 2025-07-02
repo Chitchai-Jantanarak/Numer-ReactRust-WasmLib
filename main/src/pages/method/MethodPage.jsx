@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { ParamInput } from "../../components/inputs/ParamInput.jsx";
-import katex from "katex"
-import 'katex/dist/katex.min.css';
+import { motion } from "motion/react"
 import * as wasm from "../../wasm/cal_core.js"
-import OutputPanel from "../../components/outputs/OutputPanel.jsx";
+
+import { ParamInput } from "../../components/inputs/ParamInput.jsx";
+import {OutputPanel} from "../../components/outputs/OutputPanel.jsx";
+import CpnTranstition from "../../components/transition/CpnTransition.jsx"
 
 const MethodPage = ({
     methodName,
@@ -13,7 +14,8 @@ const MethodPage = ({
     externalParams,
     onInput,
     onResult,
-    useSizeIndicators
+    useSizeIndicators,
+    itemVariants
 }) => {
     const [size, setSize] = useState(methodSchema.size?.min || 0);
     const [values, setValues] = useState({});
@@ -29,15 +31,17 @@ const MethodPage = ({
     // #region - Input form implementations
 
     useEffect(() => {
-      if (exampleSchema?.examples?.length > 0 && !hasLoadedExample.current) {
-        const randomExample = exampleSchema.examples[
-          Math.floor(Math.random() * exampleSchema.examples.length)
-        ];
-        loadExample(randomExample);
-      } else {
-        resetToDefault();
-      }
-      setInitialized(true);
+      requestIdleCallback(() => {
+        if (exampleSchema?.examples?.length > 0 && !hasLoadedExample.current) {
+          const randomExample = exampleSchema.examples[
+            Math.floor(Math.random() * exampleSchema.examples.length)
+          ];
+          loadExample(randomExample);
+        } else {
+          resetToDefault();
+        }
+        setInitialized(true);
+      });
     }, []);
 
     useEffect(() => {
@@ -45,8 +49,7 @@ const MethodPage = ({
 
       if (!hasLoadedExample.current) {
         resetToDefault();
-      }
-      else {
+      } else {
         hasLoadedExample.current = false;
       }
     }, [size, initialized])
@@ -225,90 +228,101 @@ const MethodPage = ({
     // #endregion
 
     if (!initialized) {
-      return <div className="max-w-4xl mx-auto p-6">Loading...</div>
+      return (
+        <div className="max-w-4xl mx-auto p-6">
+          <h1 className="text-2xl font-bold mb-6 uppercase">{methodName || "Loading..."}</h1>
+          <div>Loading...</div>
+        </div>
+      );
     }
 
     return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">{methodName.toUpperCase()}</h1>
+      <div className="max-w-4xl mx-auto p-6">
 
-      {/* Examples section - only show if examples exist */}
-      {exampleSchema?.examples?.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">Examples</h2>
-          <div className="flex flex-wrap gap-2">
-            {exampleSchema.examples.map((example, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleExampleClick(example)}
-                className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-blue-800 text-sm"
-              >
-                {example.name}
-              </button>
-            ))}
-            <button
-              onClick={resetToDefault}
-              className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-800 text-sm"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      )}
+        {/* HEADER */}
+        <motion.div variants={itemVariants} initial={false}>
+          <h1 className="text-2xl font-bold mb-6 uppercase">{methodName}</h1>
 
-      {/* Input parameters */}
-      <div className="p-6 rounded-lg shadow-sm border mb-6">
-        <h2 className="text-lg font-semibold mb-4">Input Parameters</h2>
-
-        <ParamInput
-          param={{
-            size: methodSchema.size,
-            inputs: methodSchema.inputs,
-            currentSize: size,
-            onSizeChange: handleSizeChange,
-          }}
-          values={values}
-          onChange={handleValuesChange}
-        />
-
-        <div className="mt-6">
-          <button
-            onClick={calculateResult}
-            disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
-          >
-            {loading ? "Calculating..." : "Calculate"}
-          </button>
-        </div>
-      </div>
-
-      {/* Error message */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
-          <p className="font-medium">Error:</p>
-          <p>{error}</p>
-        </div>
-      )}
-
-      {/* Results section */}
-      {result && (
-        <div ref={resultRef} className="p-6 rounded-lg shadow-sm border">
-          {/* Object result checkings */}
-          {ioSchema.display && typeof(result) === "object" ? (
-            <OutputPanel 
-              topic={methodName} 
-              ioDisplay={ioSchema.display} 
-              result={result}  
-            />
-          ) : (
-            <pre className="whitespace-pre-wrap break-words text-error">
-              {JSON.stringify(result, null, 2)}
-            </pre> 
+          {/* Examples section - only show if examples exist */}
+          {exampleSchema?.examples?.length > 0 && (
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-2">Examples</h2>
+              <div className="flex flex-wrap gap-2">
+                {exampleSchema.examples.map((example, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleExampleClick(example)}
+                    className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-blue-800 text-sm"
+                  >
+                    {example.name}
+                  </button>
+                ))}
+                <button
+                  onClick={resetToDefault}
+                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-800 text-sm"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
           )}
-        </div>
-      )}
-    </div>
+        </motion.div>
+
+        {/* INPUT */}
+        <motion.div variants={itemVariants} initial={false}>
+          <div className="p-6 rounded-lg shadow-sm border mb-6">
+            <h2 className="text-lg font-semibold mb-4">Input Parameters</h2>
+            <ParamInput
+              param={{
+                size: methodSchema.size,
+                inputs: methodSchema.inputs,
+                currentSize: size,
+                onSizeChange: handleSizeChange,
+              }}
+              values={values}
+              onChange={handleValuesChange}
+            />
+            <div className="mt-6">
+              <button
+                onClick={calculateResult}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
+              >
+                {loading ? "Calculating..." : "Calculate"}
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* OUTPUT */}
+        <motion.div variants={itemVariants} initial={false}>
+          {/* Error message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+              <p className="font-medium">Error:</p>
+              <p>{error}</p>
+            </div>
+          )}
+
+          {/* Results section */}
+          {result && (
+            <div ref={resultRef} className="p-6 rounded-lg shadow-sm border">
+              {ioSchema.display && typeof(result) === "object" ? (
+                <OutputPanel 
+                  topic={methodName} 
+                  ioDisplay={ioSchema.display} 
+                  result={result}  
+                />
+              ) : (
+                <pre className="whitespace-pre-wrap break-words text-error">
+                  {JSON.stringify(result, null, 2)}
+                </pre> 
+              )}
+            </div>
+          )}
+        </motion.div>
+      </div>
     );
 }
 
-export default MethodPage;
+export default CpnTranstition(MethodPage);
