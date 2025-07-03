@@ -1,8 +1,10 @@
 // utils.rs
-use meval::Expr;
+use meval::{Context, Expr};
 
 pub fn evaluate_expr(expr: &Expr, value: f64) -> f64 {
-    expr.eval_with_context(&[("x", value)]).unwrap_or(0.0)
+    let mut ctx: Context<'_> = Context::new();
+    (&mut ctx).var("x", value);
+    expr.eval_with_context(&ctx).unwrap_or(0.0)
 }
 
 pub fn error_calc(x_new: f64, x_old: f64) -> f64 {
