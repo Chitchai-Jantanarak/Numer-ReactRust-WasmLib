@@ -179,6 +179,8 @@ pub fn det(mat: &Vec<Vec<f64>>) -> f64 {
 // Duplicated method for using in other topics
 pub fn guass(mat: &Vec<Vec<f64>>, ans: &Vec<f64>) -> Result<Vec<f64>, String> {
 
+    const EPSILON: f64 = 1e-32;
+
     let mut aug_matrix  : Vec<Vec<f64>> = mat.clone();
     let size            : usize         = mat.len();
 
@@ -202,8 +204,8 @@ pub fn guass(mat: &Vec<Vec<f64>>, ans: &Vec<f64>) -> Result<Vec<f64>, String> {
             aug_matrix.swap(i, max_row);
         }
 
-        if aug_matrix[i][i] == 0.0 {
-            return Err("Matrix is no unique solution".to_string());
+        if aug_matrix[i][i].abs() < EPSILON {
+            continue;
         }
 
         let pivot: f64 = aug_matrix[i][i];
@@ -218,6 +220,14 @@ pub fn guass(mat: &Vec<Vec<f64>>, ans: &Vec<f64>) -> Result<Vec<f64>, String> {
                     aug_matrix[j][k] -= ratio * aug_matrix[i][k];
                 }
             }
+        }
+    }
+
+    for row in &aug_matrix {
+        let lhs_zero = row[..size].iter().all(|&v| v.abs() < EPSILON);
+        let rhs_nonzero = row[size].abs() >= EPSILON;
+        if lhs_zero && rhs_nonzero {
+            return Err("Inconsistent system (no solution)".to_string());
         }
     }
 

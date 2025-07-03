@@ -247,6 +247,8 @@ pub(crate) fn guass_jordan_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Re
         return Err(format!("Matrix is not square: {} * {}", rows, cols));
     }
 
+    const EPSILON: f64 = 1e-32;
+
     let matrix          : Vec<Vec<f64>> = utils::mat_conv2d(&mat, rows);
     let mut aug_matrix  : Vec<Vec<f64>> = matrix.clone();
     let size            : usize         = matrix.len();
@@ -267,8 +269,8 @@ pub(crate) fn guass_jordan_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Re
             aug_matrix.swap(i, max_row);
         }
 
-        if aug_matrix[i][i] .abs() < 1e-12 {
-            return Err("Matrix is no unique solution".to_string());
+        if aug_matrix[i][i].abs() < EPSILON {
+            continue;
         }
 
         let pivot: f64 = aug_matrix[i][i];
@@ -283,6 +285,14 @@ pub(crate) fn guass_jordan_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>) -> Re
                     aug_matrix[j][k] -= ratio * aug_matrix[i][k];
                 }
             }
+        }
+    }
+
+    for row in &aug_matrix {
+        let lhs_zero = row[..size].iter().all(|&v| v.abs() < EPSILON);
+        let rhs_nonzero = row[size].abs() >= EPSILON;
+        if lhs_zero && rhs_nonzero {
+            return Err("Inconsistent system (no solution)".to_string());
         }
     }
 

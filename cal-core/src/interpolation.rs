@@ -184,19 +184,24 @@ pub(crate) fn spline_core(x: Vec<f64>, y: Vec<f64>, target_x: f64, degree: u32) 
 fn exact_linear_interpolation(x: &Vec<f64>, y: &Vec<f64>, target_x: f64) -> f64 {
     // Exact calc
     let len = x.len();
-    let mut idx = 0;
 
-    while idx < len - 1 && target_x > x[idx + 1] {
-        idx += 1;
+    let mut left: usize = 0;
+    let mut right: usize = len - 1;
+    while left < right - 1 {
+        let mid = (left + right) / 2;
+        if x[mid] <= target_x {
+            left = mid;
+        } else {
+            right = mid;
+        }
     }
 
-    let exact = if idx == len - 1 {
-        y[idx]
-    } else {
-        y[idx] + (y[idx + 1] - y[idx]) / (x[idx + 1] - x[idx]) * (target_x - x[idx])
-    };
+    let x0 = x[left];
+    let y0 = y[left];
+    let x1 = x[right];
+    let y1 = y[right];
 
-    exact
+    y0 + (y1 - y0) * (target_x - x0) / (x1 - x0)
 }
 
 fn spline_linear(x: &Vec<f64>, y: &Vec<f64>, target_x: f64) -> Result<SplineResult, String> {
@@ -219,7 +224,7 @@ fn spline_linear(x: &Vec<f64>, y: &Vec<f64>, target_x: f64) -> Result<SplineResu
         let x1 = row[0];
         let x2 = row[1];
 
-        if target_x > x1 && target_x <= x2 {
+        if target_x > x[x1 as usize] && target_x <= x[x2 as usize] {
             target_y = row[2] * target_x + row[3];
             break;
         }
