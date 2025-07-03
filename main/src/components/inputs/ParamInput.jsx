@@ -41,7 +41,9 @@ export const ParamInput = ({ param, values, onChange }) => {
     <div className="space-y-4">
       {size && (
         <div className="flex items-center gap-2">
-          <label className="font-medium">{size.label}:</label>
+          <label htmlFor="size-control" className="font-medium">
+              {size.label}:
+            </label>
           <input
             type="number"
             min={size.min}
@@ -66,8 +68,8 @@ export const ParamInput = ({ param, values, onChange }) => {
           const [rows, cols] = shape
           return (
             <div key={name} className="space-y-2">
-              <label className="font-semibold">
-                {name.toUpperCase()} ({rows}x{cols})
+              <label htmlFor={`${name}-${r}-${c}`} className="font-semibold uppercase">
+                {name} ({rows}x{cols})
               </label>
               <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${cols}, minmax(30px, 1fr))` }}>
                 {Array.from({ length: rows }).map((_, r) =>
@@ -75,6 +77,8 @@ export const ParamInput = ({ param, values, onChange }) => {
                     <input
                       key={`${name}-${r}-${c}`}
                       type="number"
+                      id={`${name}-${r}-${c}`} 
+                      name={`${name}[${r}][${c}]`}
                       value={values?.[name]?.[r]?.[c] ?? ""}
                       onChange={(e) => {
                         const value = input.type === "number" ? Number.parseFloat(e.target.value) || 0 : e.target.value
@@ -102,8 +106,10 @@ export const ParamInput = ({ param, values, onChange }) => {
           if (input.type === "select" && input.options) {
             return (
               <div key={name} className="space-y-1">
-                <label className="font-medium">{name.toUpperCase()}:</label>
+                <label htmlFor={`select-${name}`} className="font-medium uppercase">{name}:</label>
                 <select
+                  id={`select-${name}`}
+                  name={name}
                   value={values?.[name] ?? input.options[0]?.value ?? ""}
                   onChange={(e) => {
                     const value = typeof input.options[0]?.value === "number" ? Number(e.target.value) : e.target.value
@@ -124,8 +130,10 @@ export const ParamInput = ({ param, values, onChange }) => {
           else if (input.type === "number") {
             return (
               <div key={name} className="space-y-1">
-                <label className="font-medium">{name.toUpperCase()}:</label>
+                <label htmlFor={`input-${name}`} className="font-medium uppercase">{name}:</label>
                 <input
+                  id={`input-${name}`}
+                  name={name}
                   type="number"
                   value={values?.[name] ?? ""}
                   onChange={(e) => {
@@ -149,7 +157,7 @@ export const ParamInput = ({ param, values, onChange }) => {
           else if (input.type === "string") {
             return (
               <div key={name} className="space-y-1">
-                <label className="font-medium">{name.toUpperCase()}:</label>
+                <label htmlFor="expression-input" className="font-medium uppercase">{name}:</label>
                 <ExpressionInput
                   key={`${name}-expression || "empty"}`}
                   value={values?.[name] ?? ""}

@@ -12,7 +12,8 @@ import LULinear from './pages/old/LULinear.jsx';
 import MultipleRegression from "./pages/old/MultipleRegression.jsx";
 import SingleRegression from "./pages/old/SingleRegression.jsx";
 
-import Bisection from './pages/method/BisectionPage.jsx';
+import Bisection from './pages/method/root_eq/Bisection.jsx';
+import FalsePositon from './pages/method/root_eq/FalsePosition.jsx';
 
 import Layout from './components/layout/Layout.jsx';
 import { ThemeProvider } from './components/providers/ThemeProvider.jsx';
@@ -26,12 +27,10 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<div className=' text-red-400'>
-            <Link to={"/CholeskyLinear"}>test</Link> 
-          </div>} />
 
           <Route element={<Layout />}>            
             <Route path="/bisection" element={<Bisection />} />
+            <Route path="/false_position" element={<FalsePositon />} />
             <Route path="/CholeskyLinear" element={<CholeskyLinear />} />
             <Route path="/CramerLinear" element={<CramerLinear />} />
             <Route path="/GuassJordanLinear" element={<GuassJordanLinear />} />

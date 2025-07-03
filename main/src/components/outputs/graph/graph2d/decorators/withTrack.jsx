@@ -70,7 +70,7 @@ export function withTrack(Wrapped) {
         </div>
 
         <div>
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
+          <div className="flex justify-between text-ms mb-1">
             <span>Step</span>
             <span>
               {currentIteration + 1} / {data.length}

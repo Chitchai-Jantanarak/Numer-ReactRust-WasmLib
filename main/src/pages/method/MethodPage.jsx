@@ -202,6 +202,10 @@ const MethodPage = ({
           // Call WASM
           const wasmFn = ioSchema.fn;
           const result = await wasm[wasmFn](...params);
+
+          console.log(wasm[wasmFn]);
+          console.log(result);
+          
           
           setResult(result);
           

@@ -3,7 +3,7 @@ import { parse } from "mathjs";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
-export const ExpressionInput = ({ value, onChange }) => {
+export const    ExpressionInput = ({ value, onChange }) => {
     const [localValue, setLocalValue] = useState(value || "");
     const [latex, setLatex] = useState("");
     const [error, setError] = useState("");
@@ -91,6 +91,8 @@ export const ExpressionInput = ({ value, onChange }) => {
     return (
         <div className="relative w-full space-y-2">
             <input
+                id="expression-input"
+                name="equation"
                 type="text"
                 value={localValue}
                 onChange={handleInputChange}

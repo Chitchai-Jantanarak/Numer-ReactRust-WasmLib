@@ -1,7 +1,7 @@
-import MethodPage from "./MethodPage"
-import { inputSchemas } from "../../config/inputSchemas"
-import { ioSchemas } from "../../config/ioSchemas"
-import { exampleSchemas } from "../../config/exampleSchemas"
+import MethodPage from "../MethodPage"
+import { inputSchemas } from "../../../config/inputSchemas"
+import { ioSchemas } from "../../../config/ioSchemas"
+import { exampleSchemas } from "../../../config/exampleSchemas"
 
 export default function Bisection() {
   const externalParams = {}

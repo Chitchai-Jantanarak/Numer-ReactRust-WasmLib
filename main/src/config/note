@@ -13,6 +13,10 @@
 - Jacobi & Guass Seidel & Over relaxation & Conjugate
     I: init = initial guess
 
+-- Interpolation -- 
+OUTPUT - spline linear ([index<L>, index<R>, m[x], b])
+
+
 -- Regression --
 - multi lsq
     I: polynomial need iterative data key's grouping.
