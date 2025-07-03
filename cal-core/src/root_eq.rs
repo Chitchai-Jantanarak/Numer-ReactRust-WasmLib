@@ -11,51 +11,51 @@ use wasm_bindgen::prelude::*;
 // Duplication struct
 
 #[derive(Serialize)] // Serialize the struct
-pub struct BisectionResult {
-    pub iteration: u64,
-    pub xl: f64,
-    pub xr: f64,
-    pub xm: f64,
-    pub error: f64
+pub(crate) struct BisectionResult {
+    pub(crate) iteration: u64,
+    pub(crate) xl: f64,
+    pub(crate) xr: f64,
+    pub(crate) xm: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct FalsePositionResult {
-    pub iteration: u64,
-    pub xl: f64,
-    pub xr: f64,
-    pub xm: f64,
-    pub error: f64
+pub(crate) struct FalsePositionResult {
+    pub(crate) iteration: u64,
+    pub(crate) xl: f64,
+    pub(crate) xr: f64,
+    pub(crate) xm: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct FixedPointResult {
-    pub iteration: u64,
-    pub x: f64,
-    pub error: f64
+pub(crate) struct FixedPointResult {
+    pub(crate) iteration: u64,
+    pub(crate) x: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct TaylorResult {
-    pub iteration: u64,
-    pub x: f64,
-    pub sum: f64,
-    pub error: f64
+pub(crate) struct TaylorResult {
+    pub(crate) iteration: u64,
+    pub(crate) x: f64,
+    pub(crate) sum: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct NewtonResult {
-    pub iteration: u64,
-    pub x: f64,
-    pub error: f64
+pub(crate) struct NewtonResult {
+    pub(crate) iteration: u64,
+    pub(crate) x: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct SecantResult {
-    pub iteration: u64,
-    pub x0: f64,
-    pub x1: f64,
-    pub error: f64
+pub(crate) struct SecantResult {
+    pub(crate) iteration: u64,
+    pub(crate) x0: f64,
+    pub(crate) x1: f64,
+    pub(crate) error: f64
 }
 
 
@@ -113,7 +113,7 @@ pub fn secant(equation: &str, x0: f64, x1: f64) -> JsValue {
 
 // Add implement method
 
-pub fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<BisectionResult>, String> {
+pub(crate) fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<BisectionResult>, String> {
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),
@@ -162,7 +162,7 @@ pub fn bisection_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<Bi
     Ok(result)
 }
 
-pub fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<FalsePositionResult>, String> { 
+pub(crate) fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<Vec<FalsePositionResult>, String> { 
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),
@@ -213,7 +213,7 @@ pub fn false_position_core(equation: &str, mut xl: f64, mut xr: f64) -> Result<V
     Ok(result)
 }
 
-pub fn fixed_point_core(equation: &str, mut x: f64) -> Result<Vec<FixedPointResult>, String> {
+pub(crate) fn fixed_point_core(equation: &str, mut x: f64) -> Result<Vec<FixedPointResult>, String> {
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),
@@ -243,7 +243,7 @@ pub fn fixed_point_core(equation: &str, mut x: f64) -> Result<Vec<FixedPointResu
     Ok(result)
 }
 
-pub fn taylor_core(equations: Vec<String>, xl: f64, xr: f64) -> Result<Vec<TaylorResult>, String> {
+pub(crate) fn taylor_core(equations: Vec<String>, xl: f64, xr: f64) -> Result<Vec<TaylorResult>, String> {
     let len          : usize              = equations.len();
 
     let mut result   : Vec<TaylorResult>  = Vec::new();
@@ -278,7 +278,7 @@ pub fn taylor_core(equations: Vec<String>, xl: f64, xr: f64) -> Result<Vec<Taylo
     Ok(result)
 }
 
-pub fn newton_raphson_core(equation_base: &str, equation_diff: &str, mut x: f64) -> Result<Vec<NewtonResult>, String> {
+pub(crate) fn newton_raphson_core(equation_base: &str, equation_diff: &str, mut x: f64) -> Result<Vec<NewtonResult>, String> {
     let expr_base: Expr = match equation_base.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),
@@ -312,7 +312,7 @@ pub fn newton_raphson_core(equation_base: &str, equation_diff: &str, mut x: f64)
     Ok(result)
 }
 
-pub fn secant_core(equation: &str, mut x0: f64, mut x1: f64) -> Result<Vec<SecantResult>, String> {
+pub(crate) fn secant_core(equation: &str, mut x0: f64, mut x1: f64) -> Result<Vec<SecantResult>, String> {
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),

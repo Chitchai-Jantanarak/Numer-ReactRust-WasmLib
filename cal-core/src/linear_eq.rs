@@ -579,8 +579,7 @@ pub(crate) fn over_relaxation_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, in
     });
 
     for iter in 0..100 {
-
-        let prev_x = x[0];
+        let mut max_err = 0.0;
 
         for i in 0..x_size {
 
@@ -595,18 +594,23 @@ pub(crate) fn over_relaxation_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, in
                 return Err("Matrix's diagonal elems is 0".to_string());
             }
 
-            x[i] = ((ans[i] - sum) / matrix[i][i] * omega) + ((1.0 - omega) * x[i]);
-        }
+            let old_val = x[i];
+            let new_val = ((ans[i] - sum) / matrix[i][i] * omega) + ((1.0 - omega) * x[i]);
+            x[i] = new_val;
 
-        let error: f64 = utils::error_calc(x[0], prev_x);
+            let err = utils::error_calc(new_val, old_val);
+            if err > max_err {
+                max_err = err;
+            }
+        }
 
         result.push(LinearIterationResult {
             iteration: iter + 1,
             x: x.clone(),
-            error
+            error: max_err,
         });
 
-        if error < 1e-6 {
+        if max_err < 1e-6 {
             break;
         }
     }
@@ -677,7 +681,7 @@ pub(crate) fn cg_core(mat: Vec<f64>, rows: usize, ans: Vec<f64>, init: Vec<f64>)
         });
 
 
-        if error < 1e-6 {
+        if error < 1e-12 {
             break;
         }
 
