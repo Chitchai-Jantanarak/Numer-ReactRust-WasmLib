@@ -31,8 +31,15 @@ pub fn derivative
     true_result: f64
 ) -> JsValue {
 
-    match derivative_core(equation, x, h, method_type, precision_type, diff_times, true_result) {
-        Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
+    let result = match method_type {
+        1 => derivative_core::<Forward>(equation, x, h, precision_type, diff_times, true_result),
+        2 => derivative_core::<Backward>(equation, x, h, precision_type, diff_times, true_result),
+        3 => derivative_core::<Central>(equation, x, h, precision_type, diff_times, true_result),
+        _ => Err("Method type is mismatch".to_string()),
+    };
+
+    match result {
+        Ok(res) => to_value(&res).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
         Err(e) => JsValue::from_str(&e),
     }
 }
@@ -88,14 +95,16 @@ pub fn derivative
 struct Forward;
 struct Backward;
 struct Central;
-enum Precision {
+pub(crate) enum Precision {
     First,
     Second,
     Third
 }
 
 // No cache for evaluate the function in single call
-trait Differential {
+pub(crate) trait Differential {
+    fn new() -> Self where Self: Sized;
+
     fn first_derivative(&self, equation: &str, x: f64, h: f64, precision: Precision) -> Result<f64, String>;
     fn second_derivative(&self, equation: &str, x: f64, h: f64, precision: Precision) -> Result<f64, String>;
     fn third_derivative(&self, equation: &str, x: f64, h: f64, precision: Precision) -> Result<f64, String>;
@@ -103,6 +112,7 @@ trait Differential {
 }
 
 impl Differential for Forward {
+    fn new() -> Self { Forward }
 
     fn first_derivative(&self, equation: &str, x: f64, h: f64, precision: Precision) -> Result<f64, String> {
         
@@ -248,6 +258,7 @@ impl Differential for Forward {
 }
 
 impl Differential for Backward {
+    fn new() -> Self { Backward }
 
     fn first_derivative(&self, equation: &str, x: f64, h: f64, precision: Precision) -> Result<f64, String> {
         
@@ -393,6 +404,7 @@ impl Differential for Backward {
 }
 
 impl Differential for Central {
+    fn new() -> Self { Central }
 
     fn first_derivative(&self, equation: &str, x: f64, h: f64, precision: Precision) -> Result<f64, String> {
         
@@ -627,39 +639,21 @@ fn get_precision(count: u32) -> Result<Precision, String> {
     }
 }
 
-fn get_method(count: u32) -> Result<Box<dyn Differential>, String> {
-    match count {
-        1 => Ok(Box::new(Forward)),
-        2 => Ok(Box::new(Backward)),
-        3 => Ok(Box::new(Central)),
-        _ => Err("Method type is mismatch".to_string())
-    }
-}
-
 
 
 // function core
 
-pub(crate) fn derivative_core
-(
+pub(crate) fn derivative_core<T: Differential>(
     equation: &str,
     x: f64,
     h: f64,
-    method_type: u32, 
     precision_type: u32, 
     diff_times: u32, 
     true_result: f64
 ) -> Result<DerivativeResult, String> {
-    
-    let method: Box<dyn Differential> = match get_method(method_type) {
-        Ok(result) => result,
-        Err(e) => return Err(e)
-    };
-    
-    let precision: Precision = match get_precision(precision_type) {
-        Ok(result) => result,
-        Err(e) => return Err(e)
-    };
+    let method = T::new();
+
+    let precision: Precision = get_precision(precision_type)?;
     
     let result = match diff_times {
         1 => method.first_derivative(equation, x, h, precision),
@@ -669,15 +663,9 @@ pub(crate) fn derivative_core
         _ => return Err(format!("Not implemented where derivative times is {}", diff_times))
     };
 
-    match result {
-        Ok(value) => {
-            let error = utils::error_calc(true_result, value);
-            Ok(DerivativeResult {
-                true_value: true_result,
-                result: value,
-                error
-            })
-        }
-        Err(e) => return Err(e)
-    }
+    result.map(|value| DerivativeResult {
+        true_value: true_result,
+        result: value,
+        error: utils::error_calc(true_result, value),
+    })
 }

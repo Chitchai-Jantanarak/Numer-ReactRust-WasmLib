@@ -13,26 +13,26 @@ use wasm_bindgen::prelude::*;
 // Duplication struct
 
 #[derive(Serialize)] // Serialize the struct
-pub(crate) struct IntegralResult {
-    pub(crate) true_result: f64,
-    pub(crate) result: f64,
-    pub(crate) error: f64
+pub struct IntegralResult {
+    pub true_result: f64,
+    pub result: f64,
+    pub error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub(crate) struct RombergResult { 
-    pub(crate) true_result: f64,
-    pub(crate) result: Vec<Vec<f64>>,
-    pub(crate) error: Vec<Vec<f64>>
+pub struct RombergResult { 
+    pub true_result: f64,
+    pub result: Vec<Vec<f64>>,
+    pub error: Vec<Vec<f64>>
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub(crate) struct GuassIntegralResult {
-    pub(crate) true_result: f64,
-    pub(crate) result: f64,
-    pub(crate) error: f64,
-    pub(crate) abscissas: Vec<f64>,
-    pub(crate) weight: Vec<f64>
+pub struct GuassIntegralResult {
+    pub true_result: f64,
+    pub result: f64,
+    pub error: f64,
+    pub abscissas: Vec<f64>,
+    pub weight: Vec<f64>
 }
 
 
@@ -83,7 +83,7 @@ pub fn guass_integration(equation: &str, bound_least: f64, bound_most: f64, true
 
 // Add implement method
 
-pub(crate) fn trapezodial_core
+pub fn trapezodial_core
 (
     equation: &str,
     bound_least: f64, 
@@ -123,7 +123,7 @@ pub(crate) fn trapezodial_core
     })
 }
 
-pub(crate) fn simpson_1in3_core
+pub fn simpson_1in3_core
 (
     equation: &str,
     bound_least: f64, 
@@ -171,7 +171,7 @@ pub(crate) fn simpson_1in3_core
     })
 }
 
-pub(crate) fn simpson_3in8_core
+pub fn simpson_3in8_core
 (
     equation: &str,
     bound_least: f64, 
@@ -221,7 +221,7 @@ pub(crate) fn simpson_3in8_core
     })
 }
 
-pub(crate) fn romberg_core 
+pub fn romberg_core 
 (
     equation: &str,
     bound_least: f64, 
@@ -243,7 +243,7 @@ pub(crate) fn romberg_core
     error.push(vec![utils::error_calc(true_result, result[0][0])]);
     let mut iteration: usize = 0;
 
-    loop {
+    for _ in 0..20 {
         iteration += 1;
         height /= 2.0;
 
@@ -272,9 +272,16 @@ pub(crate) fn romberg_core
             }
         }
     }
+
+    return Ok(RombergResult {
+                    true_result, 
+                    result: result.clone(), 
+                    error: error.clone()
+                   
+               });
 }
 
-pub(crate) fn guass_integration_core 
+pub fn guass_integration_core 
 (
     equation: &str,
     bound_least: f64,

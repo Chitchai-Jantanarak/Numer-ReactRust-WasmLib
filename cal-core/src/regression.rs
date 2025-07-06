@@ -102,10 +102,12 @@ pub(crate) fn mult_lsq_regression_core(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32
     }
 
     // no sorting cause of the y if always be matches for every row at x
-    if degree.iter().all(|&value| value == 0)  {
+    if degree.iter().all(|&value| value == 1)  {
+        // LINEAR
         return mult_linear_lsq_calc(x, y, degree);
     }
     else {
+        // POLYNOMIAL + CONSTANT
         return mult_polynomial_lsq_calc(x, y, degree);
     }
 }
@@ -194,7 +196,11 @@ fn mult_polynomial_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Resul
                         
                         let powered_datas: Vec<f64> = datas[k]
                             .iter()
-                            .map(|&value| value.powi((comb + combinations[i][k]) as i32))
+                            .map(|&value| value.powi(
+                                (
+                                combinations[i][k]) as i32 + 
+                                combinations[j][k] as i32)
+                                )
                             .collect();
                         term.push(powered_datas);
                     }
@@ -252,6 +258,7 @@ fn mult_polynomial_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Resul
     }
 }
 
+// NOTE: Generate deg + 1 rom this ctx.
 pub(crate) fn generate_combinations(sizes: Vec<u32>) -> Vec<Vec<u32>> {
     let mut result = Vec::new();
     let mut indices = vec![0; sizes.len()];
