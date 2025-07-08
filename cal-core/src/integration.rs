@@ -1,7 +1,7 @@
 // integration.rs
 use crate::utils;
 
-use std::f64::consts::PI;
+use std::{f64::{self, consts::PI}};
 
 use meval::Expr;
 use serde::Serialize;
@@ -21,7 +21,6 @@ pub struct IntegralResult {
 
 #[derive(Serialize)] // Serialize the struct
 pub struct RombergResult { 
-    pub true_result: f64,
     pub result: Vec<Vec<f64>>,
     pub error: Vec<Vec<f64>>
 }
@@ -64,8 +63,8 @@ pub fn simpson_3in8(equation: &str, bound_least: f64, bound_most: f64, trapezoid
 }
 
 #[wasm_bindgen]
-pub fn romberg(equation: &str, bound_least: f64, bound_most: f64, true_result: f64) -> JsValue {
-    match romberg_core(equation, bound_least, bound_most, true_result) {
+pub fn romberg(equation: &str, bound_least: f64, bound_most: f64) -> JsValue {
+    match romberg_core(equation, bound_least, bound_most) {
         Ok(result) => to_value(&result).unwrap_or_else(|e| JsValue::from_str(&format!("Serialization error: {}", e))),
         Err(e) => JsValue::from_str(&e),
     }
@@ -226,7 +225,6 @@ pub fn romberg_core
     equation: &str,
     bound_least: f64, 
     bound_most: f64, 
-    true_result: f64
 ) -> Result<RombergResult, String>    
 {
 
@@ -240,31 +238,25 @@ pub fn romberg_core
     let mut height : f64           = bound_most - bound_least;
     
     result.push(vec![trapezodial_calc(expr.clone(), bound_least, bound_most, height)]);
-    error.push(vec![utils::error_calc(true_result, result[0][0])]);
-    let mut iteration: usize = 0;
+    error.push(vec![f64::NAN]);
 
-    for _ in 0..20 {
-        iteration += 1;
+    for i in 1..=10 {
         height /= 2.0;
 
-        result.push(vec![0.0; iteration + 1]);
-        error.push(vec![0.0; iteration + 1]);
+        result.push(vec![0.0; i + 1]);
+        error.push(vec![f64::NAN; i + 1]);
 
-        result[iteration][0] = trapezodial_calc(expr.clone(), bound_least, bound_most, height);
+        result[i][0] = trapezodial_calc(expr.clone(), bound_least, bound_most, height);
 
-        for i in 1..=iteration {
-            result[iteration][i] = {
-                4.0_f64.powi(i as i32) * result[iteration][i - 1] - result[iteration - 1][i - 1] 
-                / ( 4.0_f64.powi(i as i32) - 1.0 )
+        for j in 1..=i {
+            result[i][j] = {
+                (4.0_f64.powi(j as i32) * result[i][j - 1] - result[i - 1][j - 1]) 
+                / ( 4.0_f64.powi(j as i32) - 1.0 )
             };
 
-            error[iteration][i] = utils::error_calc(result[iteration][i], result[iteration][i - 1]);
-            if error[iteration][i] < 1e-12 {
-
-                error.push(vec![utils::error_calc(true_result, result[iteration][i])]);
-
+            error[i][j] = utils::error_calc(result[i][j], result[i][j - 1]);
+            if error[i][j] < 1e-12 {
                 return Ok(RombergResult {
-                    true_result, 
                     result: result.clone(), 
                     error: error.clone()
                    
@@ -274,10 +266,8 @@ pub fn romberg_core
     }
 
     return Ok(RombergResult {
-                    true_result, 
                     result: result.clone(), 
                     error: error.clone()
-                   
                });
 }
 
@@ -372,8 +362,12 @@ fn legendre_polynomial_deriv(points: usize, x: f64) -> f64 {
          - ((iter - 1) as f64 * result[iter - 2] )) / (iter as f64);
     }
 
-    let diff = points as f64 * (result[points - 1] - x * result[points]) / (1.0 - x * x);
+    let diff = (points as f64) * (x * result[points] - result[points - 1]) / (1.0 - x * x);
     
+    if (x.abs() - 1.0).abs() < 1e-12 {
+        return f64::INFINITY; // or handle singularity appropriately
+    }
+
     diff
 }
 
@@ -390,12 +384,13 @@ fn legendre_abscissas(points: usize) -> Vec<f64> {
     for i in 0..points {
         let mut x: f64 = result[i];
 
-        loop {
+        for _ in 0..10 {
             let legendre_poly_value       : f64 = legendre_polynomial(points, x);
             let legendre_poly_deriv_value : f64 = legendre_polynomial_deriv(points, x);
             let x_new = x - legendre_poly_value / legendre_poly_deriv_value;
 
-            if utils::error_calc(x_new, x) < 1e-12 {
+            let err = utils::error_calc(x_new, x);
+            if err < 1e-12 {
                 break;
             }
 
@@ -404,6 +399,12 @@ fn legendre_abscissas(points: usize) -> Vec<f64> {
 
         result[i] = x;
     }
+
+    println!("Inner function abs");
+    for i in result.iter() {
+        print!("{} ", i);
+    }
+    println!();
 
     result
 }

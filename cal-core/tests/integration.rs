@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod integration {
+    use cal_core::guass_integration_core;
     use::cal_core::{
         trapezodial_core,
         simpson_1in3_core,
@@ -89,10 +90,9 @@ mod integration {
     }
 
     #[test]
-    fn test_rombreg() {
+    fn test_rombreg_fn1() {
         let (mut equation, bound_least, bound_most, true_result) = sample_i();
-        equation = "200 * (x / (5 + x)) * exp( -2 * x / 30 )";
-        let result = romberg_core(equation, 0., 30., true_result).unwrap();
+        let result = romberg_core(equation, bound_least, bound_most).unwrap();
 
         println!("RESULT");
         for i in result.result {
@@ -111,7 +111,52 @@ mod integration {
             println!();
         }
         println!();
+    }
 
-        println!("TRUE RESULT\n{}", result.true_result);
+    #[test]
+    fn test_rombreg_fn2() {
+        let (mut equation, bound_least, bound_most, true_result) = sample_i();
+        equation = "200 * (x / (5 + x)) * exp( -2 * x / 30 )";
+        let result = romberg_core(equation, 0., 30.).unwrap();
+
+        println!("RESULT");
+        for i in result.result {
+            for j in i {
+                print!("{:.2} ", j)
+            }
+            println!();
+        }
+        println!();
+
+        println!("ERROR");
+        for i in result.error {
+            for j in i {
+                print!("{:.2} ", j)
+            }
+            println!();
+        }
+        println!();
+    }
+
+    #[test]
+    fn test_guass_integral() {
+        let (equation, bound_least, bound_most, true_result) = sample_i();
+        let result = guass_integration_core(
+            equation, 
+            bound_least, 
+            bound_most,
+            true_result, 
+            4)
+        .unwrap();
+
+        // println!("result: {}\ntrue result: {}\nerror: {}", result.result, result.true_result, result.error);
+        // for i in result.weight {
+        //     println!("{} ", i)
+        // }
+        println!();
+        for i in result.abscissas {
+            println!("{} ", i)
+        }
+        // println!();
     }
 }
