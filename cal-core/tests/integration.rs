@@ -146,17 +146,17 @@ mod integration {
             bound_least, 
             bound_most,
             true_result, 
-            4)
+            1)
         .unwrap();
 
         // println!("result: {}\ntrue result: {}\nerror: {}", result.result, result.true_result, result.error);
-        // for i in result.weight {
-        //     println!("{} ", i)
-        // }
         println!();
         for i in result.abscissas {
             println!("{} ", i)
         }
-        // println!();
+        println!();
+        for i in result.weight {
+            println!("{} ", i)
+        }
     }
 }

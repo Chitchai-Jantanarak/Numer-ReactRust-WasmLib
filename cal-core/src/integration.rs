@@ -337,74 +337,76 @@ fn trapezodial_calc(
     height / 2.0 * result
 }
 
-fn legendre_polynomial(points: usize, x: f64) -> f64 {
+fn legendre_polynomial(n: usize, x: f64) -> f64 {
 
-    let mut result: Vec<f64> = vec![0.0; points + 1];
-    result[0] = 1.0;
-    result[1] = x;
+    if n == 0 {
+        return 0.;
+    } else if n == 1 {
+        return x;
+    }
 
-    for iter in 2..=points {
-        result[iter] = (((2 * iter - 1) as f64 * x * result[iter - 1])
-         - ((iter - 1) as f64 * result[iter - 2] )) / (iter as f64);
+    let mut p0 = 1.;
+    let mut p1 = x;
+
+    for k in 2..=n {
+        let pk = ((2 * k - 1) as f64 * x * p1 - (k - 1) as f64 * p0) / (k as f64);
+        p0 = p1;
+        p1 = pk;
     }
     
-    result[points]
+    p1
 }
 
-fn legendre_polynomial_deriv(points: usize, x: f64) -> f64 {
+fn legendre_polynomial_deriv(n: usize, x: f64) -> f64 {
 
-    let mut result: Vec<f64> = vec![0.0; points + 1];
+    if n == 0 {
+        return 0.;
+    }
+
+    let mut result: Vec<f64> = vec![0.0; n + 1];
     result[0] = 1.0;
     result[1] = x;
 
-    for iter in 2..=points {
-        result[iter] = (((2 * iter - 1) as f64 * x * result[iter - 1])
-         - ((iter - 1) as f64 * result[iter - 2] )) / (iter as f64);
-    }
-
-    let diff = (points as f64) * (x * result[points] - result[points - 1]) / (1.0 - x * x);
+    let pn = legendre_polynomial(n, x);
+    let pn_minus_1 = legendre_polynomial(n - 1, x);
     
-    if (x.abs() - 1.0).abs() < 1e-12 {
-        return f64::INFINITY; // or handle singularity appropriately
+    // Avoid zero-division
+    if (1.0 - x * x).abs() < 1e-12 {
+        return f64::INFINITY;
     }
 
-    diff
+    (n as f64) * (x * pn - pn_minus_1) / (1.0 - x * x)
 }
 
 /// [`Using Newton's method`]
 /// Initial guess by Cosine mapping in form of Chebyshev Nodes [[0,π]] to [[-1,1]]
-fn legendre_abscissas(points: usize) -> Vec<f64> {
-    let mut result = vec![0.0; points];
+fn legendre_abscissas(n: usize) -> Vec<f64> {
+    println!("n is {}", n);
+    let mut result = vec![0.0; n];
+    let m = (n + 1) / 2;
 
-    // Initial guess
-    for i in 0..points {
-        result[i] = ( PI * (4.0 * i as f64 + 3.0) / (4.0 * points as f64 + 2.0) ).cos();
-    }
+    for i in 0..m {
+        let mut x = (PI * (i as f64 + 0.75) / (n as f64 + 0.5)).cos();
+        println!("GUESS X: {:e}", x);
+        for _ in 0..100 {
+            let p = legendre_polynomial(n, x);
+            let dp = legendre_polynomial_deriv(n, x);
+            let dx = -p / dp;
 
-    for i in 0..points {
-        let mut x: f64 = result[i];
-
-        for _ in 0..10 {
-            let legendre_poly_value       : f64 = legendre_polynomial(points, x);
-            let legendre_poly_deriv_value : f64 = legendre_polynomial_deriv(points, x);
-            let x_new = x - legendre_poly_value / legendre_poly_deriv_value;
-
-            let err = utils::error_calc(x_new, x);
-            if err < 1e-12 {
+            let x_new = (x + dx).clamp(-1.0 + 1e-10, 1.0 - 1e-10);
+            println!("x = {:e}, Pn = {:e}, Pn' = {:e}, dx = {:e}", x, p, dp, dx);
+            println!("{}", x_new - x);
+            if (x_new - x).abs() < 1e-14 {
+                x = x_new;
                 break;
             }
 
             x = x_new;
         }
 
-        result[i] = x;
+        result[i] = -x;
+        result[n - 1 - i] = x;
     }
-
-    println!("Inner function abs");
-    for i in result.iter() {
-        print!("{} ", i);
-    }
-    println!();
 
     result
 }
