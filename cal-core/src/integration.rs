@@ -13,25 +13,25 @@ use wasm_bindgen::prelude::*;
 // Duplication struct
 
 #[derive(Serialize)] // Serialize the struct
-pub struct IntegralResult {
-    pub true_result: f64,
-    pub result: f64,
-    pub error: f64
+pub(crate) struct IntegralResult {
+    pub(crate) true_result: f64,
+    pub(crate) result: f64,
+    pub(crate) error: f64
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct RombergResult { 
-    pub result: Vec<Vec<f64>>,
-    pub error: Vec<Vec<f64>>
+pub(crate) struct RombergResult { 
+    pub(crate) result: Vec<Vec<f64>>,
+    pub(crate) error: Vec<Vec<f64>>
 }
 
 #[derive(Serialize)] // Serialize the struct
-pub struct GuassIntegralResult {
-    pub true_result: f64,
-    pub result: f64,
-    pub error: f64,
-    pub abscissas: Vec<f64>,
-    pub weight: Vec<f64>
+pub(crate) struct GuassIntegralResult {
+    pub(crate) true_result: f64,
+    pub(crate) result: f64,
+    pub(crate) error: f64,
+    pub(crate) abscissas: Vec<f64>,
+    pub(crate) weight: Vec<f64>
 }
 
 
@@ -82,7 +82,7 @@ pub fn guass_integration(equation: &str, bound_least: f64, bound_most: f64, true
 
 // Add implement method
 
-pub fn trapezodial_core
+pub(crate) fn trapezodial_core
 (
     equation: &str,
     bound_least: f64, 
@@ -122,7 +122,7 @@ pub fn trapezodial_core
     })
 }
 
-pub fn simpson_1in3_core
+pub(crate) fn simpson_1in3_core
 (
     equation: &str,
     bound_least: f64, 
@@ -170,7 +170,7 @@ pub fn simpson_1in3_core
     })
 }
 
-pub fn simpson_3in8_core
+pub(crate) fn simpson_3in8_core
 (
     equation: &str,
     bound_least: f64, 
@@ -220,13 +220,12 @@ pub fn simpson_3in8_core
     })
 }
 
-pub fn romberg_core 
+pub(crate) fn romberg_core 
 (
     equation: &str,
     bound_least: f64, 
     bound_most: f64, 
-) -> Result<RombergResult, String>    
-{
+) -> Result<RombergResult, String> {
 
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
@@ -271,22 +270,21 @@ pub fn romberg_core
                });
 }
 
-pub fn guass_integration_core 
+pub(crate) fn guass_integration_core 
 (
     equation: &str,
     bound_least: f64,
     bound_most: f64,
     true_result: f64,
     points: usize
-) -> Result<GuassIntegralResult, String>
-{
+) -> Result<GuassIntegralResult, String> {
     // Substitute function
     let expr: Expr = match equation.parse() {
         Ok(e)  => e,
         Err(_) => return Err("Invalid function".to_string()),
     };
 
-    // Fetch the "x" as (a+b) / 2 + (b-a) / 2 * zeta
+    // Fetch the "x" as {(a+b) / 2 + (b-a) / 2 * zeta} To expand [-1, 1] to [b, a]
     let subs_bound : f64      = (bound_most - bound_least) / 2.0;
     let mean_bound : f64      = (bound_most + bound_least) / 2.0; 
     let abscissas  : Vec<f64> = legendre_abscissas(points);
@@ -359,8 +357,12 @@ fn legendre_polynomial(n: usize, x: f64) -> f64 {
 
 fn legendre_polynomial_deriv(n: usize, x: f64) -> f64 {
 
+    // Where in case: P(0)  = 1, P(1)  = x
+    //                P'(0) = 0, P'(1) = x
     if n == 0 {
         return 0.;
+    } else if n == 1 {
+        return 1.;
     }
 
     let mut result: Vec<f64> = vec![0.0; n + 1];
@@ -372,37 +374,41 @@ fn legendre_polynomial_deriv(n: usize, x: f64) -> f64 {
     
     // Avoid zero-division
     if (1.0 - x * x).abs() < 1e-12 {
-        return f64::INFINITY;
+        return 1e16;
     }
 
-    (n as f64) * (x * pn - pn_minus_1) / (1.0 - x * x)
+    let result =   (n as f64) * (x * pn - pn_minus_1) / (1.0 - x * x);
+
+    println!("DIFF: {}", result);
+    result
 }
 
-/// [`Using Newton's method`]
-/// Initial guess by Cosine mapping in form of Chebyshev Nodes [[0,π]] to [[-1,1]]
+/// [`Using Tricomi-style asymptotic approximation`](https://math.stackexchange.com/questions/12160/roots-of-legendre-polynomial)
+/// Currently used: Tricomi-style asymptotic approximation for standalone approximation
+/// Cosine mapping in form of Chebyshev Nodes [[0,π]] to [[-1,1]]
 fn legendre_abscissas(n: usize) -> Vec<f64> {
-    println!("n is {}", n);
     let mut result = vec![0.0; n];
     let m = (n + 1) / 2;
 
     for i in 0..m {
-        let mut x = (PI * (i as f64 + 0.75) / (n as f64 + 0.5)).cos();
-        println!("GUESS X: {:e}", x);
+        let theta = ((4 * i + 3) as f64 * PI) / (4. * (n as f64) + 2.);
+        let approx = (1. - 1. / (8. * (n as f64).powi(2)) + 1. / (8. * (n as f64).powi(3))) * theta.cos();
+
+        let x = approx;
+        // Optional Newton-Raphson refinement (If more precision needed)
+        /*
         for _ in 0..100 {
             let p = legendre_polynomial(n, x);
             let dp = legendre_polynomial_deriv(n, x);
             let dx = -p / dp;
-
             let x_new = (x + dx).clamp(-1.0 + 1e-10, 1.0 - 1e-10);
-            println!("x = {:e}, Pn = {:e}, Pn' = {:e}, dx = {:e}", x, p, dp, dx);
-            println!("{}", x_new - x);
             if (x_new - x).abs() < 1e-14 {
                 x = x_new;
                 break;
             }
-
             x = x_new;
         }
+        */
 
         result[i] = -x;
         result[n - 1 - i] = x;

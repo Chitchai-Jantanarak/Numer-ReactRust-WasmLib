@@ -8,6 +8,7 @@ pub fn evaluate_expr(expr: &Expr, value: f64) -> f64 {
 }
 
 pub fn error_calc(x_new: f64, x_old: f64) -> f64 {
+    if x_new.abs() <= 1e-24 && x_old.abs() <= 1e-24 { return 0.; }
     (x_new - x_old).abs() / x_new * 100.0
 }
 

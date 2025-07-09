@@ -92,9 +92,9 @@ pub fn derivative
  *          2          -2     24   -78    112  -78    24   -2           12
  *          3     7    -96    676  -1952  2730 -1952  676  -96    7     240
  * */
-struct Forward;
-struct Backward;
-struct Central;
+pub(crate) struct Forward;
+pub(crate) struct Backward;
+pub(crate) struct Central;
 pub(crate) enum Precision {
     First,
     Second,
@@ -239,7 +239,7 @@ impl Differential for Forward {
                 let fx_h2 : f64 = utils::evaluate_expr(&expr, x + h * 2.);
                 let fx_h  : f64 = utils::evaluate_expr(&expr, x + h);
                 let fx    : f64 = utils::evaluate_expr(&expr, x);
-                ((-2. * fx_h5) + (11. * fx_h4) - (24. * fx_h3) + (26. * fx_h2) - (14. * fx_h)) + (3. * fx) / (h.powi(4))
+                ((-2. * fx_h5) + (11. * fx_h4) - (24. * fx_h3) + (26. * fx_h2) - (14. * fx_h) + (3. * fx)) / (h.powi(4))
             }  
             Precision::Third  => {
                 let fx_h6 : f64 = utils::evaluate_expr(&expr, x + h * 6.);
@@ -303,14 +303,14 @@ impl Differential for Backward {
                 let fx_h2 : f64 = utils::evaluate_expr(&expr, x - h * 2.);
                 let fx_h  : f64 = utils::evaluate_expr(&expr, x - h);
                 let fx    : f64 = utils::evaluate_expr(&expr, x);
-                ((-1. * fx_h2) + (2. * fx_h) - fx) / (h * h)
+                (fx_h2 - (2. * fx_h) + fx) / (h * h)
             }
             Precision::Second => {
                 let fx_h3 : f64 = utils::evaluate_expr(&expr, x - h * 3.);
                 let fx_h2 : f64 = utils::evaluate_expr(&expr, x - h * 2.);
                 let fx_h  : f64 = utils::evaluate_expr(&expr, x - h);
                 let fx    : f64 = utils::evaluate_expr(&expr, x);
-                (fx_h3 - (4. * fx_h2) + (5. * fx_h) - (2. * fx)) / (h * h) 
+                ((-1. * fx_h3) + (4. * fx_h2) - (5. * fx_h) + (2. * fx)) / (h * h) 
             }  
             Precision::Third  => {
                 let fx_h4 : f64 = utils::evaluate_expr(&expr, x - h * 4.);
@@ -318,7 +318,7 @@ impl Differential for Backward {
                 let fx_h2 : f64 = utils::evaluate_expr(&expr, x - h * 2.);
                 let fx_h  : f64 = utils::evaluate_expr(&expr, x - h);
                 let fx    : f64 = utils::evaluate_expr(&expr, x);
-                ((-11. * fx_h4) + (56. * fx_h3) - (114. * fx_h2) + (104. * fx_h) - (35. * fx)) / (12. * h * h)
+                ((11. * fx_h4) - (56. * fx_h3) + (114. * fx_h2) - (104. * fx_h) + (35. * fx)) / (12. * h * h)
             } 
         };
 
@@ -385,7 +385,7 @@ impl Differential for Backward {
                 let fx_h2 : f64 = utils::evaluate_expr(&expr, x - h * 2.);
                 let fx_h  : f64 = utils::evaluate_expr(&expr, x - h);
                 let fx    : f64 = utils::evaluate_expr(&expr, x);
-                ((2. * fx_h5) - (11. * fx_h4) + (24. * fx_h3) - (26. * fx_h2) + (14. * fx_h)) - (3. * fx) / (h.powi(4))
+                ((2. * fx_h5) - (11. * fx_h4) + (24. * fx_h3) - (26. * fx_h2) + (14. * fx_h) - (3. * fx)) / (h.powi(4))
             }  
             Precision::Third  => {
                 let fx_h6 : f64 = utils::evaluate_expr(&expr, x - h * 6.);
@@ -430,7 +430,7 @@ impl Differential for Central {
                 let fx_n_h2 : f64 = utils::evaluate_expr(&expr, x - h * 2.);
                 let fx_n_h  : f64 = utils::evaluate_expr(&expr, x - h);
 
-                ((-1. * fx_p_h2) + (8. * fx_p_h) - (-8. * fx_n_h) + fx_n_h2) / (12. * h)
+                ((-1. * fx_p_h2) + (8. * fx_p_h) - (8. * fx_n_h) + fx_n_h2) / (12. * h)
             }  
             Precision::Third  => {
                 // Positive h
@@ -584,7 +584,7 @@ impl Differential for Central {
                 let fx      : f64 = utils::evaluate_expr(&expr, x);
 
                 (
-                    fx_p_h2 - (4. * fx_p_h) + fx + 
+                    fx_p_h2 - (4. * fx_p_h) + (6. * fx) + 
                     fx_n_h2 - (4. * fx_n_h)
                 ) / (h.powi(4))
             }
