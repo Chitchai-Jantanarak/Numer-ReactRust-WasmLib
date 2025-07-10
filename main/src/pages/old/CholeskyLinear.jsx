@@ -38,6 +38,8 @@ function CholeskyLinear() {
             await init();
             const mat_input = mat.flat();
             const decompositionResult = cholesky(mat_input, size, ans);
+            console.log(decompositionResult);
+            
 
             if (typeof decompositionResult === 'string') {
                 setError(decompositionResult);

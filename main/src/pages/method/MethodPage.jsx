@@ -1,3 +1,27 @@
+/**
+ * MethodPage Page's Component
+ * --------------------
+ * This component serves as a core dynamic page for rendering various methods,
+ * managing their inputs, loading example data, and displaying results from WebAssembly calls.
+ *
+ * Role:
+ * - Acts as a *reusable* execution UI for different methods.
+ *           a *receptor* what are handling where setting by configs.
+ * - Foucs on integration via callbacks & external parameters for variants reusing.
+ *
+ * Props:
+ * - methodName (string)                        : Head of topic.
+ * - methodSchema (object <inputSchemas>)       : Defines the input fields, sizes, and types required for the method.
+ * - exampleSchema (object: <exampleSchemas>)   : Provides example input data into the form.
+ * - ioSchema (object: <ioSchemas>)             : Defines input/output parameter mapping and the WASM function to call.
+ * - externalParams (object: <Param: Pages)     : Additional parameters inputs mapped to WASM function (Set as page hooks).
+ * - onInput (function: <CallBack: Pages)       : *Optional Callback* called whenever user input changes (before calculation).
+ * - onResult (function: <Callback: Pages>)     : *Optional Callback* called after WASM calculation returns a result.
+ * - useSizeIndicators (boolean)                : If true, size is managed internally.
+ * - itemVariants (object: <CpnTransition>)     : Animation configuration for UI transitions and effects.
+ */
+
+
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react"
 import * as wasm from "../../wasm/cal_core.js"
@@ -5,6 +29,7 @@ import * as wasm from "../../wasm/cal_core.js"
 import { ParamInput } from "../../components/inputs/ParamInput.jsx";
 import {OutputPanel} from "../../components/outputs/OutputPanel.jsx";
 import CpnTranstition from "../../components/transition/CpnTransition.jsx"
+
 
 const MethodPage = ({
     methodName,
@@ -27,6 +52,7 @@ const MethodPage = ({
     const hasLoadedExample = useRef(false);
     const isResetting = useRef(false);
     const resultRef = useRef(null);
+
 
     // #region - Input form implementations
 
@@ -194,7 +220,9 @@ const MethodPage = ({
           const paramsObj = useSizeIndicators ? values : { ...values, size };
 
           // Call-back for external params
-          if (onInput) onInput(paramsObj);
+          if (onInput) {
+            externalParams = onInput(paramsObj);
+          }
 
           // Extract input params order based on ioSchema
           const params = alignWASMparams(ioSchema, paramsObj, externalParams);          
@@ -286,7 +314,7 @@ const MethodPage = ({
               values={values}
               onChange={handleValuesChange}
             />
-            <div className="mt-6">
+            <div className="pt-10">
               <button
                 onClick={calculateResult}
                 disabled={loading}
@@ -313,7 +341,7 @@ const MethodPage = ({
             <div ref={resultRef} className="p-6 rounded-lg shadow-sm border">
               {ioSchema.display && typeof(result) === "object" ? (
                 <OutputPanel 
-                  topic={methodName} 
+                  topic={ioSchema.fn} 
                   ioDisplay={ioSchema.display} 
                   result={result}  
                 />

@@ -44,12 +44,14 @@ export const ioSchemas = {
         false_position: {
             fn: "false_position",
             inputs: ["equation", "xl", "xr"],
-            outputs: outputStructs.root_equation.FalsePositionResult
+            outputs: outputStructs.root_equation.FalsePositionResult,
+            display: ["table", "graph2D"]
         },
         fixed_point: {
             fn: "fixed_point",
             inputs: ["equation", "x"],
-            outputs: outputStructs.root_equation.FixedPointResult
+            outputs: outputStructs.root_equation.FixedPointResult,
+            display: ["table", "graph2D"]
         },
         taylor: {
             fn: "taylor",
@@ -57,7 +59,8 @@ export const ioSchemas = {
             map: {
                 "xl": "x"
             },
-            outputs: outputStructs.root_equation.TaylorResult
+            outputs: outputStructs.root_equation.TaylorResult,
+            display: ["table", "graph2D"]
         },
         newton_raphson: {
             fn: "newton_raphson",
@@ -65,12 +68,14 @@ export const ioSchemas = {
             map: {
                 "equation_base": "equation"
             },
-            outputs: outputStructs.root_equation.NewtonResult
+            outputs: outputStructs.root_equation.NewtonResult,
+            display: ["table", "graph2D"]
         },
         secant: {
             fn: "secant",
             inputs: ["equation", "x0", "x1"],
-            outputs: outputStructs.root_equation.SecantResult
+            outputs: outputStructs.root_equation.SecantResult,
+            display: ["table", "graph2D"]
         }
     },
     linear_equation: {
@@ -263,7 +268,8 @@ export const ioSchemas = {
         derivative: {
             fn: "derivative",
             inputs: ["equation", "x", "h", "method_type", "precision_type", "diff_times", "true_result"],
-            outputs: outputStructs.differential.DerivativeResult
+            outputs: outputStructs.differential.DerivativeResult,
+            display: ["table"]
         }
     }
 };

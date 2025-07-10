@@ -147,10 +147,9 @@ export function simpson_3in8(equation: string, bound_least: number, bound_most: 
  * @param {string} equation
  * @param {number} bound_least
  * @param {number} bound_most
- * @param {number} true_result
  * @returns {any}
  */
-export function romberg(equation: string, bound_least: number, bound_most: number, true_result: number): any;
+export function romberg(equation: string, bound_least: number, bound_most: number): any;
 /**
  * @param {string} equation
  * @param {number} bound_least
@@ -160,17 +159,6 @@ export function romberg(equation: string, bound_least: number, bound_most: numbe
  * @returns {any}
  */
 export function guass_integration(equation: string, bound_least: number, bound_most: number, true_result: number, points: number): any;
-/**
- * @param {string} equation
- * @param {number} x
- * @param {number} h
- * @param {number} method_type
- * @param {number} precision_type
- * @param {number} diff_times
- * @param {number} true_result
- * @returns {any}
- */
-export function derivative(equation: string, x: number, h: number, method_type: number, precision_type: number, diff_times: number, true_result: number): any;
 /**
  * @param {string} equation
  * @param {number} xl
@@ -212,6 +200,17 @@ export function newton_raphson(equation_base: string, equation_diff: string, x: 
  * @returns {any}
  */
 export function secant(equation: string, x0: number, x1: number): any;
+/**
+ * @param {string} equation
+ * @param {number} x
+ * @param {number} h
+ * @param {number} method_type
+ * @param {number} precision_type
+ * @param {number} diff_times
+ * @param {number} true_result
+ * @returns {any}
+ */
+export function derivative(equation: string, x: number, h: number, method_type: number, precision_type: number, diff_times: number, true_result: number): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -236,15 +235,15 @@ export interface InitOutput {
   readonly trapezodial: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly simpson_1in3: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly simpson_3in8: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
-  readonly romberg: (a: number, b: number, c: number, d: number, e: number) => number;
+  readonly romberg: (a: number, b: number, c: number, d: number) => number;
   readonly guass_integration: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
-  readonly derivative: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => number;
   readonly bisection: (a: number, b: number, c: number, d: number) => number;
   readonly false_position: (a: number, b: number, c: number, d: number) => number;
   readonly fixed_point: (a: number, b: number, c: number) => number;
   readonly taylor: (a: number, b: number, c: number, d: number) => number;
   readonly newton_raphson: (a: number, b: number, c: number, d: number, e: number) => number;
   readonly secant: (a: number, b: number, c: number, d: number) => number;
+  readonly derivative: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;

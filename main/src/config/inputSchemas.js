@@ -100,7 +100,7 @@ export const inputSchemas = {
         x: {
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         }
       }
@@ -692,23 +692,14 @@ export const inputSchemas = {
         x: { 
           shape: () => null,
           type: "number", 
-          min: 1e-4, 
+          min: -1e4, 
           max: 1e4 
         },
         h: { 
           shape: () => null,
-          type: "select",
-          options: [
-            { value: 1e-8, label: "0.00000001" },
-            { value: 1e-7, label: "0.0000001" },
-            { value: 1e-6, label: "0.000001" },
-            { value: 1e-5, label: "0.00001" },
-            { value: 1e-4, label: "0.0001" },
-            { value: 1e-3, label: "0.001" },
-            { value: 1e-2, label: "0.01" },
-            { value: 5e-2, label: "0.05" },
-            { value: 1e-1, label: "0.1" },
-          ],
+          type: "number",
+          min: 1e-6, 
+          max: 1e3 
         },
         method_type: { 
           shape: () => null,

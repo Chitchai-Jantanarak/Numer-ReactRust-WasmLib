@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react"
 import { AnimatePresence } from 'motion/react';
 import Lenis from "lenis"
 
+// OLD
 import CholeskyLinear from './pages/old/CholeskyLinear.jsx';
 import CramerLinear from "./pages/old/CramerLinear.jsx";
 import GuassNaiveLinear from './pages/old/GuassNaiveLinear.jsx';
@@ -12,8 +13,18 @@ import LULinear from './pages/old/LULinear.jsx';
 import MultipleRegression from "./pages/old/MultipleRegression.jsx";
 import SingleRegression from "./pages/old/SingleRegression.jsx";
 
+// New
+// -- Root equation --
 import Bisection from './pages/method/root_eq/Bisection.jsx';
 import FalsePositon from './pages/method/root_eq/FalsePosition.jsx';
+import FixedPoint from './pages/method/root_eq/FixedPoint.jsx';
+// -- Linear equation --
+// -- Interpolation --
+// -- Regression --
+// -- Integration --
+// -- Differential --
+import Derivative from './pages/method/differential/Derivative.jsx';
+
 
 import Layout from './components/layout/Layout.jsx';
 import { ThemeProvider } from './components/providers/ThemeProvider.jsx';
@@ -28,9 +39,18 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
 
-          <Route element={<Layout />}>            
+          <Route element={<Layout />}>
+            {/* -- Root equation -- */}
             <Route path="/bisection" element={<Bisection />} />
             <Route path="/false_position" element={<FalsePositon />} />
+            <Route path="/fixed_point" element={<FixedPoint />} />
+            {/* -- Linear equation -- */}
+            {/* -- Interpolation -- */}
+            {/* -- Regression -- */}
+            {/* -- Integration -- */}
+            {/* -- Differential -- */}
+            <Route path="/diff" element={<Derivative />} />
+
             <Route path="/CholeskyLinear" element={<CholeskyLinear />} />
             <Route path="/CramerLinear" element={<CramerLinear />} />
             <Route path="/GuassJordanLinear" element={<GuassJordanLinear />} />

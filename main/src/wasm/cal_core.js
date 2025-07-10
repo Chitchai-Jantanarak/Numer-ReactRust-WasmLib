@@ -418,13 +418,12 @@ export function simpson_3in8(equation, bound_least, bound_most, trapezoid_count,
  * @param {string} equation
  * @param {number} bound_least
  * @param {number} bound_most
- * @param {number} true_result
  * @returns {any}
  */
-export function romberg(equation, bound_least, bound_most, true_result) {
+export function romberg(equation, bound_least, bound_most) {
     const ptr0 = passStringToWasm0(equation, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.romberg(ptr0, len0, bound_least, bound_most, true_result);
+    const ret = wasm.romberg(ptr0, len0, bound_least, bound_most);
     return ret;
 }
 
@@ -440,23 +439,6 @@ export function guass_integration(equation, bound_least, bound_most, true_result
     const ptr0 = passStringToWasm0(equation, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.guass_integration(ptr0, len0, bound_least, bound_most, true_result, points);
-    return ret;
-}
-
-/**
- * @param {string} equation
- * @param {number} x
- * @param {number} h
- * @param {number} method_type
- * @param {number} precision_type
- * @param {number} diff_times
- * @param {number} true_result
- * @returns {any}
- */
-export function derivative(equation, x, h, method_type, precision_type, diff_times, true_result) {
-    const ptr0 = passStringToWasm0(equation, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.derivative(ptr0, len0, x, h, method_type, precision_type, diff_times, true_result);
     return ret;
 }
 
@@ -551,6 +533,23 @@ export function secant(equation, x0, x1) {
     const ptr0 = passStringToWasm0(equation, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.secant(ptr0, len0, x0, x1);
+    return ret;
+}
+
+/**
+ * @param {string} equation
+ * @param {number} x
+ * @param {number} h
+ * @param {number} method_type
+ * @param {number} precision_type
+ * @param {number} diff_times
+ * @param {number} true_result
+ * @returns {any}
+ */
+export function derivative(equation, x, h, method_type, precision_type, diff_times, true_result) {
+    const ptr0 = passStringToWasm0(equation, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.derivative(ptr0, len0, x, h, method_type, precision_type, diff_times, true_result);
     return ret;
 }
 

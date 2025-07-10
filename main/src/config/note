@@ -2,6 +2,7 @@
 - Shape checker
 
 -- Root equations --
+- Fixed : line graph for x
 - Taylor
     I: equation
     P: fetch equation to arr 

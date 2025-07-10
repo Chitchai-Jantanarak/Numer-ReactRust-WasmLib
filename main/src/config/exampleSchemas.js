@@ -76,16 +76,16 @@ export const exampleSchemas = {
     fixed_point: {
       examples: [
         {
-          name: "Example 1: x = sqrt(4)",
+          name: "Example 1: x = sqrt(4x)",
           inputs: {
-            equation: "sqrt(4)",
+            equation: "sqrt(4 * x)",
             x: 1,
           },
         },
         {
-          name: "Example 2: x = (2 + x^3)/(3*x^2)",
+          name: "Example 2: x = (2 + x^3)/(3+x^2)",
           inputs: {
-            equation: "(2 + x^3)/(3*x^2)",
+            equation: "(2 + x^3)/(3+x^2)",
             x: 1,
           },
         },

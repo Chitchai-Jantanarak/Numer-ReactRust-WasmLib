@@ -105,8 +105,8 @@ export const ParamInput = ({ param, values, onChange }) => {
           // For select type inputs
           if (input.type === "select" && input.options) {
             return (
-              <div key={name} className="space-y-1">
-                <label htmlFor={`select-${name}`} className="font-medium uppercase">{name}:</label>
+              <div key={name} className="space-y-2">
+                <label htmlFor={`select-${name}`} className="label font-medium uppercase">{name}:</label>
                 <select
                   id={`select-${name}`}
                   name={name}
@@ -115,7 +115,7 @@ export const ParamInput = ({ param, values, onChange }) => {
                     const value = typeof input.options[0]?.value === "number" ? Number(e.target.value) : e.target.value
                     handleScalarChange(name, value)
                   }}
-                  className="border rounded px-2 py-1 w-full"
+                  className="select select-bordered w-full"
                 >
                   {input.options.map((option, index) => (
                     <option key={index} value={option.value}>
