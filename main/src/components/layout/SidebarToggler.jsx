@@ -13,8 +13,10 @@ const SidebarToggler = ({isSidebarVisible, toggleSidebar}) => {
                 transition={{ duration: 0.3 }}
             >
                 {isSidebarVisible ? (
-                    <IconWrapper>
-                        <X size={18} />
+                    <IconWrapper className="relative">
+                        <div className="relative w-8 h-8 rounded-full bg-base-200 flex items-center justify-center">
+                            <X size={18} />
+                        </div>
                     </IconWrapper>
                 ) : 
                     <IconWrapper>

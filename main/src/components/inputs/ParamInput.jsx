@@ -68,7 +68,7 @@ export const ParamInput = ({ param, values, onChange }) => {
           const [rows, cols] = shape
           return (
             <div key={name} className="space-y-2">
-              <label htmlFor={`${name}-${r}-${c}`} className="font-semibold uppercase">
+              <label htmlFor={`${name}-${rows}-${cols}`} className="font-semibold uppercase">
                 {name} ({rows}x{cols})
               </label>
               <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${cols}, minmax(30px, 1fr))` }}>

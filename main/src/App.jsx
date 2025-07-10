@@ -109,13 +109,13 @@ function App() {
   const lenis = useRef(null);
   
   useEffect(() => {
+    
     lenis.current = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: 1,
-      smoothWheel: 1,
-      smoothTouch: 1,
-      normalizeWheel: 1
+      smooth: true,
+      smoothWheel: true,
+      smoothTouch: true,
     });
 
     const raf = (time) => {

@@ -4,7 +4,7 @@ export default {
     extend: {
       fontFamily: {
         th: ['Kanit', 'sans-serif'],
-        en: ['Rubik', 'sans-serif']
+        en: ['"IBM Plex Mono"', 'monospace']
       },
     },
   },
