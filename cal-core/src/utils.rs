@@ -2,29 +2,30 @@
 use meval::{Context, Expr};
 use std::cell::RefCell;
 use std::f64::consts;
-
-// Singleton thread ctx parser
-/** 
-         * ADDITIONAL CONSTANT, FUNCTION VALUE
-         * 
-         * mevel Context:
-         *      pi, e, 
-         *      sqrt, exp, ln, abs, 
-         *      sin, cos, tan,
-         *      asin, acos, atan, 
-         *      sinh, cosh, tanh,
-         *      asinh, acosh, atanh,
-         *      floor, ceil, round, signum,
-         *      atan2
-         *      max, min
-         * 
-         * additional:
-         *       tau, phi, gamma
-         *       cbrt
-         *       sec, csc, cot,
-         *       asec, acsc, acot,
-         *       sech, csch, coth,
-        */
+ 
+/* 
+  * ---- Singleton thread ctx parser <f64> ----
+  * ADDITIONAL CONSTANT, FUNCTION VALUE
+  * 
+  * mevel Context:
+  *      pi, e, 
+  *      sqrt, exp, ln, abs, 
+  *      sin, cos, tan,
+  *      asin, acos, atan, 
+  *      sinh, cosh, tanh,
+  *      asinh, acosh, atanh,
+  *      floor, ceil, round, signum,
+  *      atan2
+  *      max, min
+  * 
+  * additional:
+  *       tau, phi, gamma
+  *       cbrt
+  *       sec, csc, cot,
+  *       asec, acsc, acot,
+  *       sech, csch, coth,
+  *       ln2, ln10, log2e, log10e
+  */
 thread_local! {
     static CTX: RefCell<Context<'static>> = RefCell::new({
         let mut ctx = Context::new();
