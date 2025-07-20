@@ -25,16 +25,14 @@ export default class RootEquationRenderer extends BaseRenderer {
 
   render() {
     const { datas } = this.props;
-    const Chart = this.Chart;    
-
-    console.log(datas);
+    const Chart = this.Chart;        
     
-    const axisConvertX = datas.flatMap(({ xl, xr }) => [xl, xr]);
+    const axisConvertX = datas.result.flatMap(({ xl, xr }) => [xl, xr]);
     const axisConvertY = Object.values(axisConvertX)
     const mapped = axisConvertX.map((x, i) => ({
       x: x,
       y: axisConvertY[i] !== undefined ? axisConvertY[i] : null,
-    }));
+    }));    
     
     return (
       <>

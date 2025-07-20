@@ -570,13 +570,13 @@ export const inputSchemas = {
         xl: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         xr: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         trapezoid_count: { 
@@ -596,13 +596,13 @@ export const inputSchemas = {
         xl: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         xr: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         trapezoid_count: { 
@@ -622,13 +622,13 @@ export const inputSchemas = {
         xl: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6,
+          min: -1e6,
           max: 1e6 
         },
         xr: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6,
+          min: -1e6,
           max: 1e6 
         },
         trapezoid_count: { 
@@ -648,13 +648,13 @@ export const inputSchemas = {
         xl: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         xr: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         }
       }
@@ -668,13 +668,13 @@ export const inputSchemas = {
         xl: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         xr: { 
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
           max: 1e6 
         },
         points: {

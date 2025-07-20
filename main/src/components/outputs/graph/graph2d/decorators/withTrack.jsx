@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { ReferenceLine } from "recharts";
 
 export function withTrack(Wrapped) {
-    return function TrackableChart({ data, domain, children, ...rest }) {
-        const [currentIteration, setCurrentIteration] = useState(0);
-        const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0 });
+  return function TrackableChart({ data, domain, children, ...rest }) {
+    const [currentIteration, setCurrentIteration] = useState(0);
+    const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0 });
 
-        const currentStep = data[currentIteration];
+    const currentStep = data.result[currentIteration];
 
     const refColors = {
       xl: "#ef4444",
@@ -63,7 +63,7 @@ export function withTrack(Wrapped) {
     return (
       <div className="space-y-4 relative">
         <div className="flex flex-col w-full aspect-[3/2]">
-          <Wrapped {...rest} data={data} domain={domain}>
+          <Wrapped {...rest} data={data.result} domain={domain}>
             {children}
             {referenceLines}
           </Wrapped>
@@ -73,13 +73,13 @@ export function withTrack(Wrapped) {
           <div className="flex justify-between text-ms mb-1">
             <span>Step</span>
             <span>
-              {currentIteration + 1} / {data.length}
+              {currentIteration + 1} / {data.result.length}
             </span>
           </div>
           <input
             type="range"
             min={0}
-            max={data.length - 1}
+            max={data.result.length - 1}
             value={currentIteration}
             onChange={(e) => setCurrentIteration(+e.target.value)}
             className="w-full"

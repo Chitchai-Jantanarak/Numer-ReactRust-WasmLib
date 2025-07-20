@@ -1,16 +1,21 @@
-import { re } from "mathjs";
 import TableMaker from "./TableMaker";
 import Graph2DMaker from "./graph/graph2d/Graph2DMaker"
 
-export const OutputPanel = ({ topic, ioDisplay, result }) => {
+export const OutputPanel = ({ topic, ioDisplay, Result}) => {
 
-    console.log("OUTPUT PANEL\n", topic, ioDisplay, result);
+    const { values, result } = Result;
+
+    console.log("OUTPUT PANEL\n", {
+        topic,
+        ioDisplay,
+        Result
+    });
     
     return (
         <div className="space-y-10 block">
             {ioDisplay.includes("graph2D") && 
                 <>
-                    <Graph2DMaker datas={result} context={topic} />
+                    <Graph2DMaker datas={Result} context={topic} />
                     <hr />    
                 </>
             }

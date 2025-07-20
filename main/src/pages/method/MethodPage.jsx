@@ -234,7 +234,7 @@ const MethodPage = ({
             return;
           }
 
-          calculateRef.current = paramsObj;
+          calculateRef.current = paramsObj;          
 
           // Call-back for external params
           if (onInput) {
@@ -361,7 +361,7 @@ const MethodPage = ({
                 <OutputPanel 
                   topic={ioSchema.fn} 
                   ioDisplay={ioSchema.display} 
-                  result={result}  
+                  Result={{values, result}}  
                 />
               ) : (
                 <pre className="whitespace-pre-wrap break-words text-error">

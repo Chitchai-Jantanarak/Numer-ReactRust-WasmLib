@@ -7,7 +7,7 @@ export default class BaseRenderer extends React.Component {
 
     tooltip = ({ active, payload, label }) => {        
         if (active && payload && payload.length) {            
-            const { x, y } = payload[0].payload;
+            const { x, y } = payload[0].payload;            
             return (
                 <div className="p-2 bg-transparent backdrop-blur-sm backdrop-brightness-200 rounded">
                     <p><strong>x:</strong> {x.toFixed(8)}</p>

@@ -181,12 +181,12 @@ export const ioSchemas = {
         newton_divided: {
             fn: "newton_divided",
             inputs: ["x", "y", "target_x"],
-            outputs: outputStructs.intepolation.InterpolationResult
+            outputs: outputStructs.intepolation.InterpolationResult,
         },
         lagrange: {
             fn: "lagrange",
             inputs: ["x", "y", "target_x"],
-            outputs: outputStructs.intepolation.InterpolationResult
+            outputs: outputStructs.intepolation.InterpolationResult,
         },
         spline: {
             fn: "spline",
@@ -222,7 +222,8 @@ export const ioSchemas = {
                 "bound_least": "xl",
                 "bound_most": "xr",
             },
-            outputs: outputStructs.integration.IntegralResult
+            outputs: outputStructs.integration.IntegralResult,
+            display: ["graph2D"]
         },
         simpson_1in3: {
             fn: "simpson_1in3",
@@ -231,7 +232,8 @@ export const ioSchemas = {
                 "bound_least": "xl",
                 "bound_most": "xr",
             },
-            outputs: outputStructs.integration.IntegralResult
+            outputs: outputStructs.integration.IntegralResult,
+            display: ["graph2D"]
         },
         simpson_3in8: {
             fn: "simpson_3in8",
@@ -240,7 +242,8 @@ export const ioSchemas = {
                 "bound_least": "xl",
                 "bound_most": "xr",
             },
-            outputs: outputStructs.integration.IntegralResult
+            outputs: outputStructs.integration.IntegralResult,
+            display: ["graph2D"]
         },
         romberg: {
             fn: "romberg",
@@ -249,7 +252,8 @@ export const ioSchemas = {
                 "bound_least": "xl",
                 "bound_most": "xr",
             },
-            outputs: outputStructs.integration.RombergResult
+            outputs: outputStructs.integration.RombergResult,
+            display: ["graph2D"]
         },
         guass: {
             fn: "guass_integration",
@@ -258,7 +262,8 @@ export const ioSchemas = {
                 "bound_least": "xl",
                 "bound_most": "xr",
             },
-            outputs: outputStructs.integration.GuassIntegralResult
+            outputs: outputStructs.integration.GuassIntegralResult,
+            display: ["graph2D"]
         },
     },
     differential: {

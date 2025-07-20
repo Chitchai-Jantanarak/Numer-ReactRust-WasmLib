@@ -1,7 +1,9 @@
 import RootEquationRenderer from "./renderers/RootEquationRenderer";
+import IntegralRenderer from "./renderers/IntegralRenderer";
 
 const renderClassMap = {
-    EquationRenderer: RootEquationRenderer
+    EquationRenderer: RootEquationRenderer,
+    IntegralRenderer: IntegralRenderer
 }
 
 class RendererFactory {

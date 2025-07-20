@@ -5,7 +5,10 @@ const rendererMapper = {
         root_equation: "abc",
         default: "EquationRenderer"
     },
-    interpolation: {}
+    interpolation: {},
+    integration: {
+        default: "IntegralRenderer"
+    }
 }
 
 class KeyGetter {
