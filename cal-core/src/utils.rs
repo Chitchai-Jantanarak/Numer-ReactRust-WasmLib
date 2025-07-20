@@ -1,10 +1,62 @@
 // utils.rs
 use meval::{Context, Expr};
+use std::cell::RefCell;
+use std::f64::consts;
+
+// Singleton thread ctx parser
+/** 
+         * ADDITIONAL CONSTANT, FUNCTION VALUE
+         * 
+         * mevel Context:
+         *      pi, e, 
+         *      sqrt, exp, ln, abs, 
+         *      sin, cos, tan,
+         *      asin, acos, atan, 
+         *      sinh, cosh, tanh,
+         *      asinh, acosh, atanh,
+         *      floor, ceil, round, signum,
+         *      atan2
+         *      max, min
+         * 
+         * additional:
+         *       tau, phi, gamma
+         *       cbrt
+         *       sec, csc, cot,
+         *       asec, acsc, acot,
+         *       sech, csch, coth,
+        */
+thread_local! {
+    static CTX: RefCell<Context<'static>> = RefCell::new({
+        let mut ctx = Context::new();
+        
+        ctx.var("tau", consts::TAU);
+        ctx.var("phi", (1. + 5.0_f64.sqrt()) / 2.);
+        ctx.var("gamma", 0.57721566490153286060651209008240243104215933593992); // Euler-Mascheroni 
+
+        ctx.func("cbrt", f64::cbrt);
+
+        ctx.func("sec", |x: f64| 1.0 / x.cos());
+        ctx.func("csc", |x: f64| 1.0 / x.sin());
+        ctx.func("cot", |x: f64| 1.0 / x.tan());
+
+        ctx.func("asec", |x: f64| (1.0 / x).acos());
+        ctx.func("acsc", |x: f64| (1.0 / x).asin());
+        ctx.func("acot", |x: f64| (1.0 / x).atan());
+
+        ctx.func("sech", |x: f64| 1.0 / x.cosh());
+        ctx.func("csch", |x: f64| 1.0 / x.sinh());
+        ctx.func("coth", |x: f64| 1.0 / x.tanh());
+        
+        ctx
+    });
+}
 
 pub fn evaluate_expr(expr: &Expr, value: f64) -> f64 {
-    let mut ctx: Context<'_> = Context::new();
-    (&mut ctx).var("x", value);
-    expr.eval_with_context(&ctx).unwrap_or(0.0)
+    CTX.with(|ctx_cell: &RefCell<Context<'static>>| {
+        let mut ctx = ctx_cell.borrow_mut();
+        ctx.var("x", value);
+        expr.eval_with_context(&(*ctx)).unwrap_or(0.)
+    })
 }
 
 pub fn error_calc(x_new: f64, x_old: f64) -> f64 {
