@@ -91,6 +91,28 @@ export const exampleSchemas = {
         },
       ],
     },
+    taylor: {
+      examples: [
+        {
+          name: "Example 1: x = ln(x) 4th seq",
+          inputs: {
+            equation: "ln(x)",
+            sequence: 4,
+            xl: 2,
+            xr: 4
+          },
+        },
+        {
+          name: "Example 2: x = (2 + x^3)/(3+x^2)",
+          inputs: {
+            equation: "(2 + x^3)/(3+x^2)",
+            sequence: 5,
+            xl: 1,
+            xr: 5,
+          },
+        },
+      ],
+    },
     newton_raphson: {
       examples: [
         {
@@ -267,6 +289,30 @@ export const exampleSchemas = {
             xl: 0,
             xr: 3.14159,
             trapezoid_count: 20,
+          },
+        },
+      ],
+    },
+    guass: {
+      examples: [
+        {
+          name: "Example 1: x^2",
+          inputs: {
+            equation: "x^2",
+            xl: 0,
+            xr: 1,
+            trapezoid_count: 10,
+            points: 4
+          },
+        },
+        {
+          name: "Example 2: sin(x)",
+          inputs: {
+            equation: "sin(x)",
+            xl: 0,
+            xr: 3.14159,
+            trapezoid_count: 20,
+            points: 12
           },
         },
       ],

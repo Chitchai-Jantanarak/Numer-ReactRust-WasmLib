@@ -55,10 +55,7 @@ export const ioSchemas = {
         },
         taylor: {
             fn: "taylor",
-            inputs: ["equation", "xl", "xr"],
-            map: {
-                "xl": "x"
-            },
+            inputs: ["equations", "xl", "xr"],
             outputs: outputStructs.root_equation.TaylorResult,
             display: ["table", "graph2D"]
         },

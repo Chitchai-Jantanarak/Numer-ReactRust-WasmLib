@@ -23,12 +23,13 @@
 
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "motion/react"
-import * as wasm from "../../wasm/cal_core.js"
+import { motion } from "motion/react";
+import * as wasm from "../../wasm/cal_core.js";
+import isEqual from "lodash.isequal";
 
 import { ParamInput } from "../../components/inputs/ParamInput.jsx";
-import {OutputPanel} from "../../components/outputs/OutputPanel.jsx";
-import CpnTranstition from "../../components/transition/CpnTransition.jsx"
+import { OutputPanel } from "../../components/outputs/OutputPanel.jsx";
+import CpnTranstition from "../../components/transition/CpnTransition.jsx";
 
 
 const MethodPage = ({
@@ -52,6 +53,7 @@ const MethodPage = ({
     const hasLoadedExample = useRef(false);
     const isResetting = useRef(false);
     const resultRef = useRef(null);
+    const calculateRef = useRef(null);
 
 
     // #region - Input form implementations
@@ -202,12 +204,17 @@ const MethodPage = ({
             }
 
             let val = params[actualKey];
-            if (Array.isArray(val)) {
+            if (
+              Array.isArray(val) && 
+              !(val.every(item => typeof item === 'string'))
+            ) {
                 val = flattenToFloat64Array(val);
             }
 
             aligned.push(val);
         }
+
+        console.log("aligner", aligned);
 
         return aligned;
     }
@@ -219,9 +226,20 @@ const MethodPage = ({
         try {
           const paramsObj = useSizeIndicators ? values : { ...values, size };
 
+          if (calculateRef.current && isEqual(paramsObj, calculateRef.current)) {
+            console.log("SPAMMED DETECTED");
+            if (resultRef.current) {
+              resultRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+            return;
+          }
+
+          calculateRef.current = paramsObj;
+
           // Call-back for external params
           if (onInput) {
             externalParams = onInput(paramsObj);
+            console.log(externalParams);
           }
 
           // Extract input params order based on ioSchema

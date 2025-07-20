@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { parse } from "mathjs";
+
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
-export const    ExpressionInput = ({ value, onChange }) => {
+export const ExpressionInput = ({ value, onChange }) => {
     const [localValue, setLocalValue] = useState(value || "");
     const [latex, setLatex] = useState("");
     const [error, setError] = useState("");

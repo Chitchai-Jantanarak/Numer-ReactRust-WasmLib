@@ -13,7 +13,7 @@ export default function WasmLoader() {
                 transition = {{ duration: 1 }}
                 className  = 'mt-5'
             >
-                <p className='font-en'> Calculator Loading... </p>
+                <p> Calculator Loading... </p>
             </motion.h2>
         </div>
     );

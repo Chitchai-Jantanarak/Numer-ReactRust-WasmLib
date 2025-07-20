@@ -32,10 +32,7 @@ const Sidebar = ({ isVisible, isMobile, toggleSidebar }) => {
         <div className="p-3 pb-12 text-left">
 
           {/* Header */}
-          <div className="flex p-3 space-x-2">
-            {isMobile && (
-                <SidebarToggler isSidebarVisible={isVisible} toggleSidebar={toggleSidebar} />
-            )}
+          <div className="flex p-3 space-x-2 justify-between">
             {currentTopic && isMobile && (
               <div className="px-4 py-3 mb-4 border-b border-base-content">
                 <div className="text-sm text-base-content/70 mb-1">
@@ -45,6 +42,11 @@ const Sidebar = ({ isVisible, isMobile, toggleSidebar }) => {
                   {currentTopic.name}
                 </div>
               </div>
+            )}
+            {isMobile && (
+                <div className="top-0">
+                  <SidebarToggler isSidebarVisible={isVisible} toggleSidebar={toggleSidebar} />
+                </div>
             )}
           </div>
           

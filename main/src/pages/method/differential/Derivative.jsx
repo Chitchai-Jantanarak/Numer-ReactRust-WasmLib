@@ -1,9 +1,9 @@
-import { derivative, parse } from "mathjs"
-
 import MethodPage from "../MethodPage"
 import { inputSchemas } from "../../../config/inputSchemas"
 import { ioSchemas } from "../../../config/ioSchemas"
 import { exampleSchemas } from "../../../config/exampleSchemas"
+
+import { derivative, parse } from "mathjs"
 
 export default function Derivative() {
   const externalParams = {

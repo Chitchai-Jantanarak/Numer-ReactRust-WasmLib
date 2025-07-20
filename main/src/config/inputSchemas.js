@@ -111,10 +111,22 @@ export const inputSchemas = {
           shape: () => null, 
           type: "string" 
         },
-        x: {
+        sequence: {
+          shape: () => null,
+          type: "number",
+          min: 1,
+          max: 5
+        },
+        xl: {
           shape: () => null,
           type: "number", 
-          min: 1e-6, 
+          min: -1e6, 
+          max: 1e6 
+        },
+        xr: {
+          shape: () => null,
+          type: "number", 
+          min: -1e6, 
           max: 1e6 
         }
       }
@@ -544,16 +556,8 @@ export const inputSchemas = {
       size: {
         label: "Number of Degree",
         min: 2,
-        max: 5
+        max: 10
       },
-      inputs: {
-        degree: {
-          shape: (size) => [size, 1],
-          type: "number",
-          min: 0,
-          max: 4
-        }
-      }
     },
   },
   integration: {
