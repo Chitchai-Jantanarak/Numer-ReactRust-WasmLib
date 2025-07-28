@@ -1,5 +1,6 @@
 import TableMaker from "./TableMaker";
 import Graph2DMaker from "./graph/graph2d/Graph2DMaker"
+import BoxMaker from "./BoxMaker";
 
 export const OutputPanel = ({ topic, ioDisplay, Result}) => {
 
@@ -23,6 +24,11 @@ export const OutputPanel = ({ topic, ioDisplay, Result}) => {
                 <>
                     <TableMaker datas={result} />
                     <hr />    
+                </>
+            }
+            {ioDisplay.includes("box") &&
+                <>
+                    <BoxMaker datas={Result} />
                 </>
             }
             {/* {ioDisplay.includes("graph3D") && } */}

@@ -11,7 +11,7 @@ export default function Cramer() {
 
   return (
     <MethodPage
-      methodName={"bisection"}
+      methodName={"cramer"}
       methodSchema={methodSchema}
       exampleSchema={exampleSchema}
       ioSchema={ioSchema}

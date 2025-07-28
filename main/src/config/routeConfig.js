@@ -12,11 +12,11 @@ export const routesByCategory = {
     { path: "/gauss_naive", name: "Gauss Naive" },
     { path: "/gauss_jordan", name: "Gauss Jordan" },
     { path: "/inverse", name: "Inverse Matrix" },
+    { path: "/cholesky", name: "Cholesky" },
     { path: "/lu", name: "LU Decomposition" },
     { path: "/jacobi", name: "Jacobi Method" },
     { path: "/gauss_seidel", name: "Gauss-Seidel" },
     { path: "/over_relaxation", name: "SOR" },
-    { path: "/cholesky", name: "Cholesky" },
     { path: "/conjugate_gradient", name: "Conjugate Gradient" },
   ],
   "Interpolation": [

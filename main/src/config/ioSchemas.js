@@ -84,7 +84,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.CramerResult
+            outputs: outputStructs.linear_equation.CramerResult,
+            display: ["box"]
         },
         guass_naive: {
             fn: "guass_naive",
@@ -94,7 +95,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.GuassResult
+            outputs: outputStructs.linear_equation.GuassResult,
+            display: ["box"]
         },
         guass_jordan: {
             fn: "guass_jordan",
@@ -104,7 +106,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.GuassResult
+            outputs: outputStructs.linear_equation.GuassResult,
+            display: ["box"]
         },
         inverse: {
             fn: "inverse_matrix",
@@ -114,7 +117,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.InverseResult
+            outputs: outputStructs.linear_equation.InverseResult,
+            display: ["box"]
         },
         LU: {
             fn: "lu_decomposition",
@@ -124,7 +128,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.DecompositionResult
+            outputs: outputStructs.linear_equation.DecompositionResult,
+            display: ["box"]
         },
         cholesky: {
             fn: "cholesky",
@@ -134,7 +139,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.DecompositionResult
+            outputs: outputStructs.linear_equation.DecompositionResult,
+            display: ["box"]
         },
         jacobi: {
             fn: "jacobi",
@@ -144,7 +150,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.DecompositionResult
+            outputs: outputStructs.linear_equation.DecompositionResult,
+            display: ["table"]
         },
         guass_seidel: {
             fn: "guass_seidel",
@@ -154,7 +161,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.LinearIterationResult
+            outputs: outputStructs.linear_equation.LinearIterationResult,
+            display: ["table"]
         },
         over_relaxation: {
             fn: "over_relaxation",
@@ -164,7 +172,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.LinearIterationResult
+            outputs: outputStructs.linear_equation.LinearIterationResult,
+            display: ["table"]
         },
         conjugate_gradient: {
             fn: "conjugate_gradient",
@@ -174,7 +183,8 @@ export const ioSchemas = {
                 "rows": "size",
                 "ans": "b"
             },
-            outputs: outputStructs.linear_equation.ConjugateResult
+            outputs: outputStructs.linear_equation.ConjugateResult,
+            display: ["table", "graph3D"]
         }
     },
     interpolation: {
@@ -182,28 +192,33 @@ export const ioSchemas = {
             fn: "newton_divided",
             inputs: ["x", "y", "target_x"],
             outputs: outputStructs.intepolation.InterpolationResult,
+            display: ["box"]
         },
         lagrange: {
             fn: "lagrange",
             inputs: ["x", "y", "target_x"],
             outputs: outputStructs.intepolation.InterpolationResult,
+            display: ["box"]
         },
         spline: {
             fn: "spline",
             inputs: ["x", "y", "target_x", "degree"],
-            outputs: outputStructs.intepolation.SplineResult
+            outputs: outputStructs.intepolation.SplineResult,
+            display: ["box"]
         }
     },
     regression: {
         least_square: {
             fn: "lsq_regression",
             inputs: ["x", "y", "degree"],
-            outputs: outputStructs.regression.RegressionResult
+            outputs: outputStructs.regression.RegressionResult,
+            display: ["box"]
         },
         multi_least_square: {
             fn: "mult_lsq_regression",
             inputs: ["x", "y", "degree"],
-            outputs: outputStructs.regression.RegressionResult
+            outputs: outputStructs.regression.RegressionResult,
+            display: ["box"]
         },
         degree_combinations: {
             fn: "combinations_regression",
@@ -211,7 +226,8 @@ export const ioSchemas = {
             map: {
                 "sizes": "degree"
             },
-            outputs: { type: "array", items: { type: "array", items: { type: "number" } } } // No struct :(
+            outputs: { type: "array", items: { type: "array", items: { type: "number" } } }, // No struct :(
+            display: ["box"]
         },
     },
     integration: {
@@ -223,7 +239,7 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.IntegralResult,
-            display: ["graph2D"]
+            display: ["graph2D", "box"]
         },
         simpson_1in3: {
             fn: "simpson_1in3",
@@ -233,7 +249,7 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.IntegralResult,
-            display: ["graph2D"]
+            display: ["graph2D", "box"]
         },
         simpson_3in8: {
             fn: "simpson_3in8",
@@ -243,7 +259,7 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.IntegralResult,
-            display: ["graph2D"]
+            display: ["graph2D", "box"]
         },
         romberg: {
             fn: "romberg",
@@ -253,7 +269,7 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.RombergResult,
-            display: ["graph2D"]
+            display: ["graph2D", "box"]
         },
         guass: {
             fn: "guass_integration",
@@ -263,7 +279,7 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.GuassIntegralResult,
-            display: ["graph2D"]
+            display: ["graph2D", "box"]
         },
     },
     differential: {

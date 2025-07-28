@@ -4,6 +4,7 @@ import { ioSchemas } from "../../../config/ioSchemas"
 import { exampleSchemas } from "../../../config/exampleSchemas"
 
 import nerdamer from "nerdamer";
+// @ts-ignore
 import "nerdamer/calculus";
 
 export default function GuassIntegral() {

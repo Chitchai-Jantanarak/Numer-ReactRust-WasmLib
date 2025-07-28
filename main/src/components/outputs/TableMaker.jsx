@@ -1,3 +1,10 @@
+// import "katex/dist/katex.min.css"
+import { InlineMath } from "react-katex";
+
+const renderVec = (math) => {
+    return `\\begin{bmatrix} ${math.join(' \\\\ ')} \\end{bmatrix}`;
+}
+
 const TableMaker = ({ datas }) => {
     if (!datas || datas.length === 0) return <div className="alert alert-error">No Data for formatting table.</div>
     
@@ -6,7 +13,7 @@ const TableMaker = ({ datas }) => {
     
     return (
         <>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" data-lenis-prevent>
                 <table className="table">
                     <thead>
                         <tr>
@@ -20,9 +27,15 @@ const TableMaker = ({ datas }) => {
                             <tr key={key} className="hover">
                             {headers.map((header) => (
                                 <td key={header}>
-                                {typeof row[header] === "number" && header !== "iteration"
-                                    ? row[header].toFixed(9)
-                                    : row[header]}
+                                {
+                                    Array.isArray(row[header]) ? (
+                                        <InlineMath math={renderVec(row[header])} />
+                                    ) : typeof row[header] === "number" && header !== "iteration" ? (
+                                        row[header].toFixed(9)
+                                    ) : (
+                                        row[header]
+                                    )
+                                }
                                 </td>
                             ))}
                             </tr>
