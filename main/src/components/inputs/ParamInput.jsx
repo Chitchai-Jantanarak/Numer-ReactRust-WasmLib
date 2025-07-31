@@ -171,3 +171,5 @@ export const ParamInput = ({ param, values, onChange }) => {
     </div>
   )
 }
+
+export default ParamInput;

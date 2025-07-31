@@ -17,11 +17,11 @@ const ThemeChanger = () => {
       >
         {theme === "light" ? (
           <IconWrapper>
-            <MoonIcon size={18} />
+            <MoonIcon size={24} />
           </IconWrapper>
         ) : (
           <IconWrapper>
-            <SunIcon size={18} />
+            <SunIcon size={24} />
           </IconWrapper>
         )}
       </motion.div>

@@ -1,5 +1,6 @@
 // import "katex/dist/katex.min.css"
 import { InlineMath } from "react-katex";
+import ScrollFocus from "../common/ScrollFocus.jsx";
 
 const renderVec = (math) => {
     return `\\begin{bmatrix} ${math.join(' \\\\ ')} \\end{bmatrix}`;
@@ -13,7 +14,7 @@ const TableMaker = ({ datas }) => {
     
     return (
         <>
-            <div className="overflow-x-auto" data-lenis-prevent>
+            <ScrollFocus>
                 <table className="table">
                     <thead>
                         <tr>
@@ -42,7 +43,7 @@ const TableMaker = ({ datas }) => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </ScrollFocus>
         </>
     );
 }

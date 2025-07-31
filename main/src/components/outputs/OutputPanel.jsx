@@ -35,3 +35,5 @@ export const OutputPanel = ({ topic, ioDisplay, Result}) => {
         </div>
     )
 }
+
+export default OutputPanel;

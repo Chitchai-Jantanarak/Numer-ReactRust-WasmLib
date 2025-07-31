@@ -15,12 +15,12 @@ const SidebarToggler = ({isSidebarVisible, toggleSidebar}) => {
                 {isSidebarVisible ? (
                     <IconWrapper className="relative">
                         <div className="relative w-8 h-8 rounded-full bg-base-200 flex items-center justify-center">
-                            <X size={18} />
+                            <X size={24} />
                         </div>
                     </IconWrapper>
                 ) : 
                     <IconWrapper>
-                        <Menu size={18} />
+                        <Menu size={24} />
                     </IconWrapper>
                 }            
             </motion.div>

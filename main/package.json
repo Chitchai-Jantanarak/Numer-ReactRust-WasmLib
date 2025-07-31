@@ -25,6 +25,7 @@
     "plotly.js": "^2.35.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
     "react-katex": "^3.1.0",
     "react-plotly.js": "^2.6.0",
     "react-router-dom": "^7.0.1",

@@ -22,13 +22,16 @@
  */
 
 
-import { useState, useEffect, useRef } from "react";
+import { 
+  useState, useEffect, useRef, 
+  lazy, Suspense
+} from "react";
 import { motion } from "motion/react";
 import * as wasm from "../../wasm/cal_core.js";
 import isEqual from "lodash.isequal";
 
-import { ParamInput } from "../../components/inputs/ParamInput.jsx";
-import { OutputPanel } from "../../components/outputs/OutputPanel.jsx";
+const ParamInput = lazy(() => import('../../components/inputs/ParamInput.jsx')); 
+const OutputPanel = lazy(() => import('../../components/outputs/OutputPanel.jsx')); 
 import CpnTranstition from "../../components/transition/CpnTransition.jsx";
 
 
@@ -322,16 +325,18 @@ const MethodPage = ({
         <motion.div variants={itemVariants} initial={false}>
           <div className="p-6 rounded-lg shadow-sm border mb-6">
             <h2 className="text-lg font-semibold mb-4">Input Parameters</h2>
-            <ParamInput
-              param={{
-                size: methodSchema.size,
-                inputs: methodSchema.inputs,
-                currentSize: size,
-                onSizeChange: handleSizeChange,
-              }}
-              values={values}
-              onChange={handleValuesChange}
-            />
+            <Suspense fallback={<>Loading...</>}>
+              <ParamInput 
+                param={{
+                  size: methodSchema.size,
+                  inputs: methodSchema.inputs,
+                  currentSize: size,
+                  onSizeChange: handleSizeChange,
+                }}
+                values={values}
+                onChange={handleValuesChange}
+              />
+            </Suspense>
             <div className="pt-10">
               <button
                 onClick={calculateResult}
@@ -358,11 +363,13 @@ const MethodPage = ({
           {result && (
             <div ref={resultRef} className="p-6 rounded-lg shadow-sm border">
               {ioSchema.display && typeof(result) === "object" ? (
-                <OutputPanel 
-                  topic={ioSchema.fn} 
-                  ioDisplay={ioSchema.display} 
-                  Result={{values, result}}  
-                />
+                <Suspense fallback={<>Loading...</>}>
+                  <OutputPanel 
+                    topic={ioSchema.fn} 
+                    ioDisplay={ioSchema.display} 
+                    Result={{values, result}}  
+                  />
+                </Suspense>
               ) : (
                 <pre className="whitespace-pre-wrap break-words text-error">
                   {JSON.stringify(result, null, 2)}
