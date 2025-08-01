@@ -27,25 +27,30 @@ import {
   lazy, Suspense
 } from "react";
 import { motion } from "motion/react";
-import * as wasm from "../../wasm/cal_core.js";
+import * as wasm from "../wasm/cal_core.js";
 import isEqual from "lodash.isequal";
 
-const ParamInput = lazy(() => import('../../components/inputs/ParamInput.jsx')); 
-const OutputPanel = lazy(() => import('../../components/outputs/OutputPanel.jsx')); 
-import CpnTranstition from "../../components/transition/CpnTransition.jsx";
+const ParamInput  = lazy(() => import('../components/inputs/ParamInput.jsx')); 
+const OutputPanel = lazy(() => import('../components/outputs/OutputPanel.jsx')); 
+import CpnTranstition from "../components/transition/CpnTransition.jsx";
 
 
 const MethodPage = ({
-    methodName,
-    methodSchema,
-    exampleSchema,
-    ioSchema,
-    externalParams,
-    onInput,
-    onResult,
-    useSizeIndicators,
-    itemVariants
+    methodKey,
+    methodConfig
 }) => {
+    const {
+      methodName,
+      methodSchema,
+      exampleSchema,
+      ioSchema,
+      externalParams,
+      onInput,
+      onResult,
+      useSizeIndicators,
+      itemVariants
+    } = methodConfig;
+
     const [size, setSize] = useState(methodSchema.size?.min || 0);
     const [values, setValues] = useState({});
     const [result, setResult] = useState(null);
