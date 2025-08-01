@@ -21,7 +21,11 @@ import { outputStructs } from "./outputStructs";
  *      inputs: string[],
  *      map?: string[],
  *      outputs: object // Output structure spec 
- *      display: string[], // "table", "2DGraph", "3DGraph"
+ *      display: {
+ *          layout?: "horizontal" | "vertical",
+ *          mode: Array<String>,
+ *          main?: Array<String>,
+ *      }
  *  }
  * 
  *  @property {object}   topic                - Display the topic.
@@ -30,8 +34,12 @@ import { outputStructs } from "./outputStructs";
  *  @property {string}   fn                   - wasm's function name
  *  @property {Array}    inputs               - Wasm's input params name.
  *  @property {Array}    map                  - Name for mapping between configs.
+ * 
  *  @property {object}   outputs              - Wasm's output structure @see outputStructs
- *  @property {Array}    display              - Result display type ["table", "graph2D", "graph3D"]
+ *  @property {Array}    display              - Result display managers
+ *  @property {Array}    display._key.mode    - Result display type ["table", "box", "graph2D", "graph3D"]
+ *  @property {Array}    display._key.main    - Result keys to be at main section **For Box output**
+ *  @property {Enum}     display._key.layout  - Result display's direction on main section **For Box output**
  */
 export const ioSchemas = {
     root_equation: {
@@ -39,25 +47,33 @@ export const ioSchemas = {
             fn: "bisection",
             inputs: ["equation", "xl", "xr"],
             outputs: outputStructs.root_equation.BisectionResult,
-            display: ["table", "graph2D"]
+            display: {
+                mode: ["table", "graph2D"]
+            }
         },
         false_position: {
             fn: "false_position",
             inputs: ["equation", "xl", "xr"],
             outputs: outputStructs.root_equation.FalsePositionResult,
-            display: ["table", "graph2D"]
+            display: {
+                mode: ["table", "graph2D"]
+            }
         },
         fixed_point: {
             fn: "fixed_point",
             inputs: ["equation", "x"],
             outputs: outputStructs.root_equation.FixedPointResult,
-            display: ["table", "graph2D"]
+            display: {
+                mode: ["table", "graph2D"]
+            }
         },
         taylor: {
             fn: "taylor",
             inputs: ["equations", "xl", "xr"],
             outputs: outputStructs.root_equation.TaylorResult,
-            display: ["table", "graph2D"]
+            display: {
+                mode: ["table", "graph2D"]
+            }
         },
         newton_raphson: {
             fn: "newton_raphson",
@@ -66,13 +82,17 @@ export const ioSchemas = {
                 "equation_base": "equation"
             },
             outputs: outputStructs.root_equation.NewtonResult,
-            display: ["table", "graph2D"]
+            display: {
+                mode: ["table", "graph2D"]
+            }
         },
         secant: {
             fn: "secant",
             inputs: ["equation", "x0", "x1"],
             outputs: outputStructs.root_equation.SecantResult,
-            display: ["table", "graph2D"]
+            display: {
+                mode: ["table", "graph2D"]
+            }
         }
     },
     linear_equation: {
@@ -85,7 +105,11 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.CramerResult,
-            display: ["box"]
+            display: {
+                mode: ["box"],
+                main: ["A", "result", "=", "b"],
+                layout: "horizontal"
+            }
         },
         guass_naive: {
             fn: "guass_naive",
@@ -96,7 +120,11 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.GuassResult,
-            display: ["box"]
+            display: {
+                mode: ["box"],
+                main: ["A", "result", "=", "b"],
+                layout: "horizontal"
+            }
         },
         guass_jordan: {
             fn: "guass_jordan",
@@ -107,7 +135,11 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.GuassResult,
-            display: ["box"]
+            display: {
+                mode: ["box"],
+                main: ["A", "result", "=", "b"],
+                layout: "horizontal"
+            }
         },
         inverse: {
             fn: "inverse_matrix",
@@ -118,7 +150,11 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.InverseResult,
-            display: ["box"]
+            display: {
+                mode: ["box"],
+                main: ["A", "result", "=", "b"],
+                layout: "horizontal"
+            }
         },
         LU: {
             fn: "lu_decomposition",
@@ -129,7 +165,11 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.DecompositionResult,
-            display: ["box"]
+            display: {
+                mode: ["box"],
+                main: ["A", "result", "=", "b"],
+                layout: "horizontal"
+            }
         },
         cholesky: {
             fn: "cholesky",
@@ -140,7 +180,11 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.DecompositionResult,
-            display: ["box"]
+            display: {
+                mode: ["box"],
+                main: ["A", "result", "=", "b"],
+                layout: "horizontal"
+            }
         },
         jacobi: {
             fn: "jacobi",
