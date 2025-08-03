@@ -5,6 +5,7 @@ import BoxMaker from "./BoxMaker";
 export const OutputPanel = ({ topic, ioDisplay, Result}) => {
 
     const { values, result } = Result;
+    const { mode } = ioDisplay 
 
     console.log("OUTPUT PANEL\n", {
         topic,
@@ -14,24 +15,24 @@ export const OutputPanel = ({ topic, ioDisplay, Result}) => {
     
     return (
         <div className="space-y-10 block">
-            {ioDisplay.includes("graph2D") && 
+            {mode.includes("graph2D") && 
                 <>
                     <Graph2DMaker datas={Result} context={topic} />
                     <hr />    
                 </>
             }
-            {ioDisplay.includes("table") && 
+            {mode.includes("table") && 
                 <>
                     <TableMaker datas={result} />
                     <hr />    
                 </>
             }
-            {ioDisplay.includes("box") &&
+            {mode.includes("box") &&
                 <>
-                    <BoxMaker datas={Result} />
+                    <BoxMaker datas={Result} io={ioDisplay} />
                 </>
             }
-            {/* {ioDisplay.includes("graph3D") && } */}
+            {/* {mode.includes("graph3D") && } */}
         </div>
     )
 }

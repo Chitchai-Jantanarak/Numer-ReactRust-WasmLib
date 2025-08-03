@@ -107,7 +107,7 @@ export const ioSchemas = {
             outputs: outputStructs.linear_equation.CramerResult,
             display: {
                 mode: ["box"],
-                main: ["A", "result", "=", "b"],
+                main: ["A", "value", "=", "b"],
                 layout: "horizontal"
             }
         },
@@ -195,7 +195,9 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.DecompositionResult,
-            display: ["table"]
+            display: {
+                mode: ["table"]
+            }
         },
         guass_seidel: {
             fn: "guass_seidel",
@@ -206,7 +208,9 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.LinearIterationResult,
-            display: ["table"]
+            display: {
+                mode: ["table"]
+            }
         },
         over_relaxation: {
             fn: "over_relaxation",
@@ -217,7 +221,9 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.LinearIterationResult,
-            display: ["table"]
+            display: {
+                mode: ["table"]
+            }
         },
         conjugate_gradient: {
             fn: "conjugate_gradient",
@@ -228,7 +234,9 @@ export const ioSchemas = {
                 "ans": "b"
             },
             outputs: outputStructs.linear_equation.ConjugateResult,
-            display: ["table", "graph3D"]
+            display: {
+                mode: ["table", "graph3D"]
+            }
         }
     },
     interpolation: {
@@ -236,19 +244,25 @@ export const ioSchemas = {
             fn: "newton_divided",
             inputs: ["x", "y", "target_x"],
             outputs: outputStructs.intepolation.InterpolationResult,
-            display: ["box"]
+            display: {
+                mode: ["box"]
+            }
         },
         lagrange: {
             fn: "lagrange",
             inputs: ["x", "y", "target_x"],
             outputs: outputStructs.intepolation.InterpolationResult,
-            display: ["box"]
+            display: {
+                mode: ["box"]
+            }
         },
         spline: {
             fn: "spline",
             inputs: ["x", "y", "target_x", "degree"],
             outputs: outputStructs.intepolation.SplineResult,
-            display: ["box"]
+            display: {
+                mode: ["box"]
+            }
         }
     },
     regression: {
@@ -256,13 +270,17 @@ export const ioSchemas = {
             fn: "lsq_regression",
             inputs: ["x", "y", "degree"],
             outputs: outputStructs.regression.RegressionResult,
-            display: ["box"]
+            display: {
+                mode: ["box"]
+            }
         },
         multi_least_square: {
             fn: "mult_lsq_regression",
             inputs: ["x", "y", "degree"],
             outputs: outputStructs.regression.RegressionResult,
-            display: ["box"]
+            display: {
+                mode: ["box"]
+            }
         },
         degree_combinations: {
             fn: "combinations_regression",
@@ -271,7 +289,9 @@ export const ioSchemas = {
                 "sizes": "degree"
             },
             outputs: { type: "array", items: { type: "array", items: { type: "number" } } }, // No struct :(
-            display: ["box"]
+            display: {
+                mode: ["box"]
+            }
         },
     },
     integration: {
@@ -283,7 +303,9 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.IntegralResult,
-            display: ["graph2D", "box"]
+            display: {
+                mode: ["graph2D", "box"]
+            }
         },
         simpson_1in3: {
             fn: "simpson_1in3",
@@ -293,7 +315,9 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.IntegralResult,
-            display: ["graph2D", "box"]
+            display: {
+                mode: ["graph2D", "box"]
+            }
         },
         simpson_3in8: {
             fn: "simpson_3in8",
@@ -303,7 +327,9 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.IntegralResult,
-            display: ["graph2D", "box"]
+            display: {
+                mode: ["graph2D", "box"]
+            }
         },
         romberg: {
             fn: "romberg",
@@ -313,7 +339,9 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.RombergResult,
-            display: ["graph2D", "box"]
+            display: {
+                mode: ["graph2D", "box"]
+            }
         },
         guass: {
             fn: "guass_integration",
@@ -323,7 +351,9 @@ export const ioSchemas = {
                 "bound_most": "xr",
             },
             outputs: outputStructs.integration.GuassIntegralResult,
-            display: ["graph2D", "box"]
+            display: {
+                mode: ["graph2D", "box"]
+            }
         },
     },
     differential: {
@@ -331,7 +361,9 @@ export const ioSchemas = {
             fn: "derivative",
             inputs: ["equation", "x", "h", "method_type", "precision_type", "diff_times", "true_result"],
             outputs: outputStructs.differential.DerivativeResult,
-            display: ["table"]
+            display: {
+                mode: ["table"]
+            }
         }
     }
 };

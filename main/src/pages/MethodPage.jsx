@@ -39,7 +39,7 @@ const MethodPage = ({
     methodKey,
     methodConfig
 }) => {
-    const {
+    var {
       methodName,
       methodSchema,
       exampleSchema,

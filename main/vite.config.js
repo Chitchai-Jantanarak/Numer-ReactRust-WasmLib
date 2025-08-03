@@ -11,6 +11,8 @@ export default defineConfig({
   },
   optimizeDeps: {
     // Prevent pre-bundling pkg
+    include: ['nerdamer', 'nerdamer/Calculus'],
+    dedupe: ['nerdamer'],
     exclude: ['./src/pkg/cal_core.js'], 
   },
   resolve: {

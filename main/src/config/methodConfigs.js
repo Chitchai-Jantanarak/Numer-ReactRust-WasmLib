@@ -108,7 +108,7 @@ export const methodConfigs = {
       exampleSchema: exampleSchemas.linear_equation.guass_naive,
       component: MethodPage,
     },
-    cramer: {
+    guass_jordan: {
       route: "/guass_jordan",
       methodName: "Guassian Jordan",
       methodSchema: inputSchemas.linear_equation.guass_jordan,
