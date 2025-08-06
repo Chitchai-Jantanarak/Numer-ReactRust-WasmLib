@@ -7,6 +7,7 @@ import { derivative, parse } from "mathjs";
 import nerdamer from "nerdamer";
 // @ts-ignore
 import "nerdamer/Calculus";
+import { Section } from "lucide-react";
 
 export const methodConfigs = {
   root_equation: {
@@ -330,3 +331,16 @@ export const methodConfigs = {
     },
   }
 }
+
+
+export const routesByCategories = Object.entries(methodConfigs)
+  .reduce((acc, [section, methods]) => {
+    acc[section] = Object.entries(methods)
+      .map(([key, { methodName, route }]) => ({
+        name: methodName,
+        path: `/${section}${route}`
+      }))
+      console.log("acc " + acc);
+      
+    return acc;
+  }, {});

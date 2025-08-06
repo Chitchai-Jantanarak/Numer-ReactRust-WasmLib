@@ -1,13 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import SidebarToggler from "./SidebarToggler";
-import { routesByCategory } from "../../config/routeConfig";
+import { routesByCategories } from "../../config/methodConfigs";
 
 const Sidebar = ({ isVisible, isMobile, toggleSidebar }) => {
   const location = useLocation();
 
   // Function to get current topic info
   const getCurrentTopicInfo = () => {
-    for (const [category, links] of Object.entries(routesByCategory)) {
+    for (const [category, links] of Object.entries(routesByCategories)) {
       const currentLink = links.find(link => link.path === location.pathname);
       if (currentLink) {
         return {
@@ -52,7 +52,7 @@ const Sidebar = ({ isVisible, isMobile, toggleSidebar }) => {
           
           {/* Content */}
           <div className="py-2 text-sm space-y-4">
-            {Object.entries(routesByCategory).map(([category, links]) => (
+            {Object.entries(routesByCategories).map(([category, links]) => (
               <div key={category}>
                 <ul className="menu mb-2">
                   <li>
