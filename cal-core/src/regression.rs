@@ -258,38 +258,40 @@ fn mult_polynomial_lsq_calc(x: Vec<f64>, y: Vec<f64>, degree: Vec<u32>) -> Resul
     }
 }
 
-// NOTE: Generate deg + 1 rom this ctx.
+// NOTE: Generate deg + 1 row this ctx.
 pub(crate) fn generate_combinations(sizes: Vec<u32>) -> Vec<Vec<u32>> {
-    let mut result = Vec::new();
-    let mut indices = vec![0; sizes.len()];
-    
-    loop {
-        // clone the indice template where collect old value
-        result.push(indices.clone());
-        
-        // set as while loop for counting combinations
-        let mut i = sizes.len() - 1;
-        while i > 0 { 
-            if indices[i] < sizes[i] - 1 { // condition when indices is not max stack
-                indices[i] += 1;
-                break;
-            } 
-            else { // condition when counter the next index (that indication is full)
-                indices[i] = 0;
-                i -= 1;
-            }
-        }
-
-        // Prevent as a last character (highest num at x0)
-        if i == 0 {
-            if indices[0] < sizes[0] - 1 { // last index but not maximum
-                indices[0] += 1;
-            } 
-            else {
-                break;
-            }
-        }
+    // FALLBACK: Empty Vec
+    if sizes.is_empty() || sizes.iter().any(|&s| s == 0) {
+        return Vec::new();
     }
 
+    // reserved upfront allocation
+    let total: usize = sizes.iter().map(|&s| s as usize).product();
+    let mut result = Vec::with_capacity(total);
+    
+    let mut indices = vec![0u32; sizes.len()];
+    
+    loop {
+        result.push(indices.clone());
+
+        let mut carry = true;
+        for i in (0..sizes.len()).rev() {
+            if carry {
+                indices[i] += 1;
+                
+                if indices[i] < sizes[i] {
+                    carry = false;
+                } else {
+                    indices[i] = 0;
+                }
+            }
+        }
+
+        // Prevent as carry outstanding (highest num at x0)
+        if carry {
+            break;
+        }
+    }
+    
     result
 }
